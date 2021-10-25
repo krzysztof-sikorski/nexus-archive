@@ -2,7 +2,7 @@
 
 The <q>Nexus Archive</q> website, based on Symfony framework.
 
-## License
+## Licence
 
 This project is licensed under [European Union Public Licence (EUPL)][EUPL].
 
