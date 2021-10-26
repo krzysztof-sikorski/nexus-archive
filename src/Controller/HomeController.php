@@ -18,18 +18,12 @@ class HomeController
     }
 
     #[Route('/', name: 'home', methods: ['GET'])]
-    public function index(Environment $twigEnvironment): Response
+    public function index(): Response
     {
         $content = $this->twigEnvironment->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
 
         return new Response($content);
-    }
-
-    #[Route('/favicon.ico', name: 'favicon_ico', methods: ['GET'])]
-    public function favicon(): Response
-    {
-        return new Response(null, Response::HTTP_GONE, []);
     }
 }
