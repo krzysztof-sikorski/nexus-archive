@@ -9,22 +9,27 @@ use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
 
+use function bin2hex;
+use function random_bytes;
+
 final class UserAccessTokenFactory
 {
+    private const VALUE_BYTES_LENGTH = 32;
+
     public function __construct(
         private ClockInterface $clock,
         private EntityManagerInterface $entityManager
     ) {
     }
 
-    public function create(string $value, DateInterval $duration): UserAccessToken
+    public function create(DateInterval $duration): UserAccessToken
     {
         $uuid = Uuid::v4();
         $createdAt = $this->clock->getCurrentDateTime();
         $validUntil = $createdAt->add($duration);
 
         $token = new UserAccessToken($uuid);
-        $token->setValue($value);
+        $token->setValue($this->generateValue());
         $token->setCreatedAt($createdAt);
         $token->setValidUntil($validUntil);
 
@@ -32,5 +37,10 @@ final class UserAccessTokenFactory
         $this->entityManager->flush();
 
         return $token;
+    }
+
+    private function generateValue(): string
+    {
+        return bin2hex(string: random_bytes(length: self::VALUE_BYTES_LENGTH));
     }
 }

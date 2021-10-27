@@ -16,8 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-use function base64_encode;
-use function random_bytes;
 use function sprintf;
 
 #[AsCommand(
@@ -73,9 +71,7 @@ final class CreateUserAccessTokenCommand extends Command
 
         $io->info(sprintf('Duration: %s', var_export($duration, true)));
 
-        $value = base64_encode(random_bytes(32));
-
-        $token = $this->userAccessTokenFactory->create($value, $duration);
+        $token = $this->userAccessTokenFactory->create($duration);
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 
