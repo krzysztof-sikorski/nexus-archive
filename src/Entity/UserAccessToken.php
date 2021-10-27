@@ -16,7 +16,7 @@ final class UserAccessToken
     #[ORM\Column(type: 'uuid')]
     private Uuid $id;
 
-    #[ORM\Column(type: 'text', nullable: false)]
+    #[ORM\Column(type: 'text', unique: true, nullable: false)]
     private ?string $value;
 
     #[ORM\Column(type: 'datetimetz_immutable', nullable: false)]
