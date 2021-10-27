@@ -6,11 +6,14 @@ namespace App\Entity;
 
 use App\Repository\UserAccessTokenRepository;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserAccessTokenRepository::class)]
-final class UserAccessToken
+final class UserAccessToken implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
@@ -68,5 +71,21 @@ final class UserAccessToken
     public function setValidUntil(?DateTimeImmutable $validUntil): void
     {
         $this->validUntil = $validUntil;
+    }
+
+    #[ArrayShape([
+        'id' => Uuid::class,
+        'value' => "null|string",
+        'createdAt' => "null|string",
+        'validUntil' => "null|string",
+    ])]
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'value' => $this->getValue(),
+            'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
+            'validUntil' => $this->getValidUntil()?->format(DateTimeInterface::ISO8601),
+        ];
     }
 }
