@@ -12,7 +12,7 @@ use Symfony\Component\Uid\Uuid;
 use function bin2hex;
 use function random_bytes;
 
-final class UserAccessTokenFactory
+final class UserAccessTokenManager
 {
     private const VALUE_BYTES_LENGTH = 32;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\UserAccessTokenFactory;
+use App\Service\UserAccessTokenManager;
 use DateInterval;
 use ErrorException;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -29,7 +29,7 @@ final class CreateUserAccessTokenCommand extends Command
     private const DEFAULT_DURATION = '1 month';
 
     public function __construct(
-        private UserAccessTokenFactory $userAccessTokenFactory,
+        private UserAccessTokenManager $userAccessTokenManager,
         private SerializerInterface $serializer,
     ) {
         parent::__construct();
@@ -74,7 +74,7 @@ final class CreateUserAccessTokenCommand extends Command
 
         $io->info(sprintf('Selected duration: %s', $durationStr));
 
-        $token = $this->userAccessTokenFactory->create($duration);
+        $token = $this->userAccessTokenManager->create($duration);
 
         $io->info(sprintf('Token: %s', $this->serializer->serialize($token, 'json')));
 
