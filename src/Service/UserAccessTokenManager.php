@@ -39,6 +39,13 @@ final class UserAccessTokenManager
         return $token;
     }
 
+    public function prune(): void
+    {
+        $dql = 'DELETE FROM App:UserAccessToken AS t WHERE t.validUntil < current_timestamp()';
+        $query = $this->entityManager->createQuery($dql);
+        $query->execute();
+    }
+
     private function generateValue(): string
     {
         return bin2hex(string: random_bytes(length: self::VALUE_BYTES_LENGTH));
