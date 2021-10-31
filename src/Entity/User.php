@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\UserRoles;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -14,6 +15,8 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Table(name: '`user`')]
 final class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const DEFAULT_ROLE = UserRoles::ROLE_USER;
+
     private const USERNAME_MAX_LENGTH = 180;
 
     #[ORM\Id]
@@ -69,9 +72,9 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
 
-        // guarantee every user at least has ROLE_USER
-        if (false === in_array('ROLE_USER', $roles, true)) {
-            $roles[] = 'ROLE_USER';
+        // guarantee every user at least has default role
+        if (false === in_array(self::DEFAULT_ROLE, $roles, true)) {
+            $roles[] = self::DEFAULT_ROLE;
         }
 
         return $roles;
