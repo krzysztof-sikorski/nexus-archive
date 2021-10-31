@@ -7,14 +7,16 @@ namespace App\Entity;
 use App\Contract\UserRoles;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-final class User implements UserInterface, PasswordAuthenticatedUserInterface
+final class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
     public const DEFAULT_ROLE = UserRoles::ROLE_USER;
 
@@ -148,5 +150,16 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEnabled(bool $enabled): void
     {
         $this->enabled = $enabled;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
+            'userIdentifier' => $this->getUserIdentifier(),
+            'roles' => $this->getRoles(),
+            'enabled' => $this->isEnabled(),
+        ];
     }
 }
