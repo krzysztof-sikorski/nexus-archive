@@ -28,6 +28,10 @@ final class UserAccessToken implements JsonSerializable
     #[ORM\Column(name: 'valid_until', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $validUntil = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'owner_id', unique: false, nullable: false)]
+    private ?User $owner = null;
+
     public function __construct(?Uuid $id = null)
     {
         $this->id = $id ?? Uuid::v4();
@@ -73,6 +77,16 @@ final class UserAccessToken implements JsonSerializable
         $this->validUntil = $validUntil;
     }
 
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): void
+    {
+        $this->owner = $owner;
+    }
+
     public function jsonSerialize(): array
     {
         return [
@@ -80,6 +94,7 @@ final class UserAccessToken implements JsonSerializable
             'value' => $this->getValue(),
             'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
             'validUntil' => $this->getValidUntil()?->format(DateTimeInterface::ISO8601),
+            'owner_id' => $this->getOwner()?->getId(),
         ];
     }
 }

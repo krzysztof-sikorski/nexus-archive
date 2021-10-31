@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Contract\Service\ClockInterface;
+use App\Entity\User;
 use App\Entity\UserAccessToken;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,13 +24,14 @@ final class UserAccessTokenManager
     ) {
     }
 
-    public function create(DateInterval $duration): UserAccessToken
+    public function create(User $owner, DateInterval $duration): UserAccessToken
     {
         $uuid = Uuid::v4();
         $createdAt = $this->clock->getCurrentDateTime();
         $validUntil = $createdAt->add($duration);
 
         $token = new UserAccessToken($uuid);
+        $token->setOwner($owner);
         $token->setValue($this->generateValue());
         $token->setCreatedAt($createdAt);
         $token->setValidUntil($validUntil);

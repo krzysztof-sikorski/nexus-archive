@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\UserAccessTokenManager;
 use DateInterval;
 use Exception;
@@ -25,13 +27,16 @@ use function sprintf;
 )]
 final class UserCreateAccessTokenCommand extends Command
 {
+    private const ARGUMENT_NAME_OWNER = 'owner';
     private const ARGUMENT_NAME_DURATION = 'duration';
     private const DEFAULT_DURATION = '1 month';
 
+    private ?User $owner = null;
     private ?string $durationStr = null;
     private ?DateInterval $duration = null;
 
     public function __construct(
+        private UserRepository $userRepository,
         private UserAccessTokenManager $userAccessTokenManager,
         private SerializerInterface $serializer,
     ) {
@@ -40,6 +45,14 @@ final class UserCreateAccessTokenCommand extends Command
 
     protected function configure(): void
     {
+        $this->addOption(
+            self::ARGUMENT_NAME_OWNER,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Owner\'s username',
+            null
+        );
+
         $this->addOption(
             self::ARGUMENT_NAME_DURATION,
             null,
@@ -52,6 +65,24 @@ final class UserCreateAccessTokenCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+
+        /** @var QuestionHelper $helper */
+        $helper = $this->getHelper('question');
+        $question = new Question('Owner\'s username?', null);
+
+        $ownerUsername = $input->getOption(self::ARGUMENT_NAME_OWNER);
+        while (true) {
+            if (null === $ownerUsername) {
+                $ownerUsername = $helper->ask($input, $output, $question);
+            }
+            $this->owner = $this->userRepository->findByUsername($ownerUsername);
+            if (null !== $this->owner) {
+                break;
+            } else {
+                $io->error(sprintf('User with username=%s does not exist!', $ownerUsername));
+                $ownerUsername = null;
+            }
+        }
 
         /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
@@ -83,15 +114,22 @@ final class UserCreateAccessTokenCommand extends Command
 
         $io->info(
             sprintf(
+                'Selected owner: %s',
+                $this->serializer->serialize($this->owner, 'json')
+            )
+        );
+
+        $io->info(
+            sprintf(
                 'Selected duration: %s (parsed as: %s)',
                 $this->durationStr,
                 $this->serializer->serialize($this->duration, 'json')
             )
         );
 
-        $token = $this->userAccessTokenManager->create($this->duration);
+        $token = $this->userAccessTokenManager->create($this->owner, $this->duration);
 
-        $io->info(sprintf('Token: %s', $this->serializer->serialize($token, 'json')));
+        $io->info(sprintf('Created token: %s', $this->serializer->serialize($token, 'json')));
 
         return Command::SUCCESS;
     }
