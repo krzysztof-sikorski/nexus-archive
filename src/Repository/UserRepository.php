@@ -40,6 +40,17 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         $this->getEntityManager()->flush();
     }
 
+    public function findByUsername(string $username): ?User
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->andWhere('u.username = :username')
+            ->setParameter('username', $username);
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
