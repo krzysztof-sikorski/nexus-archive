@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Contract\UserRoles;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,14 +24,20 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'uuid')]
     private Uuid $id;
 
-    #[ORM\Column(type: 'string', length: self::USERNAME_MAX_LENGTH, unique: true)]
+    #[ORM\Column(type: 'datetimetz_immutable', nullable: false)]
+    private ?DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'string', length: self::USERNAME_MAX_LENGTH, unique: true, nullable: false)]
     private ?string $username;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: false)]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', nullable: false)]
     private ?string $password;
+
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $enabled = false;
 
     public function __construct(?Uuid $id = null)
     {
@@ -40,6 +47,21 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?Uuid
     {
         return $this->id;
+    }
+
+    public function setId(Uuid $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeImmutable $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
     /**
@@ -116,5 +138,15 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 }
