@@ -25,16 +25,16 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Uuid $id;
 
     #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
-    private ?DateTimeImmutable $createdAt;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(name: 'username', type: 'string', length: self::USERNAME_MAX_LENGTH, unique: true, nullable: false)]
-    private ?string $username;
+    private ?string $username = null;
 
     #[ORM\Column(name: 'roles', type: 'json', nullable: false, options: ['default' => '[]'])]
     private array $roles = [];
 
     #[ORM\Column(name: 'password', type: 'string', nullable: false)]
-    private ?string $password;
+    private ?string $password = null;
 
     #[ORM\Column(name: 'enabled', type: 'boolean', nullable: false)]
     private bool $enabled = false;

@@ -20,13 +20,13 @@ final class UserAccessToken implements JsonSerializable
     private Uuid $id;
 
     #[ORM\Column(name: 'value', type: 'text', unique: true, nullable: false)]
-    private ?string $value;
+    private ?string $value = null;
 
     #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
-    private ?DateTimeImmutable $createdAt;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(name: 'valid_until', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $validUntil;
+    private ?DateTimeImmutable $validUntil = null;
 
     public function __construct(?Uuid $id = null)
     {
