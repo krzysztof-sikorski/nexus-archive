@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Service\UserAccessTokenManager;
 use DateInterval;
-use ErrorException;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -29,6 +29,7 @@ final class UserCreateAccessTokenCommand extends Command
     private const DEFAULT_DURATION = '1 month';
 
     private ?string $durationStr = null;
+    private ?DateInterval $duration = null;
 
     public function __construct(
         private UserAccessTokenManager $userAccessTokenManager,
@@ -44,19 +45,35 @@ final class UserCreateAccessTokenCommand extends Command
             null,
             InputOption::VALUE_REQUIRED,
             'Token duration (how long it is valid)',
-            null
+            self::DEFAULT_DURATION
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
+        /** @var QuestionHelper $helper */
+        $helper = $this->getHelper('question');
+        $questionText = sprintf('Token duration (default: %s)?', self::DEFAULT_DURATION);
+        $question = new Question($questionText, self::DEFAULT_DURATION);
+
         $this->durationStr = $input->getOption(self::ARGUMENT_NAME_DURATION);
-        if (null === $this->durationStr) {
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $questionText = sprintf('Token duration (default: %s)?', self::DEFAULT_DURATION);
-            $question = new Question($questionText, self::DEFAULT_DURATION);
-            $this->durationStr = $helper->ask($input, $output, $question);
+        while (true) {
+            if (null === $this->durationStr) {
+                $this->durationStr = $helper->ask($input, $output, $question);
+            }
+            try {
+                $duration = DateInterval::createFromDateString($this->durationStr);
+            } catch (Exception $e) {
+                $duration = null;
+            }
+            if (false !== $duration instanceof DateInterval) {
+                $this->duration = $duration;
+                break;
+            } else {
+                $io->error(sprintf('Invalid duration: %s', $this->durationStr));
+            }
         }
     }
 
@@ -64,21 +81,15 @@ final class UserCreateAccessTokenCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $duration = DateInterval::createFromDateString($this->durationStr);
-        if (false === $duration instanceof DateInterval) {
-            $io->error(sprintf('Invalid duration: %s', $this->durationStr));
-            return Command::FAILURE;
-        }
-
         $io->info(
             sprintf(
                 'Selected duration: %s (parsed as: %s)',
                 $this->durationStr,
-                $this->serializer->serialize($duration, 'json')
+                $this->serializer->serialize($this->duration, 'json')
             )
         );
 
-        $token = $this->userAccessTokenManager->create($duration);
+        $token = $this->userAccessTokenManager->create($this->duration);
 
         $io->info(sprintf('Token: %s', $this->serializer->serialize($token, 'json')));
 
