@@ -40,9 +40,9 @@ final class UserCreateAccessTokenCommand extends Command
         $this->addOption(
             self::ARGUMENT_NAME_DURATION,
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             'Token duration (how long it is valid)',
-            self::DEFAULT_DURATION
+            null
         );
     }
 
@@ -72,7 +72,13 @@ final class UserCreateAccessTokenCommand extends Command
             return Command::FAILURE;
         }
 
-        $io->info(sprintf('Selected duration: %s', $durationStr));
+        $io->info(
+            sprintf(
+                'Selected duration: %s (parsed as: %s)',
+                $durationStr,
+                $this->serializer->serialize($duration, 'json')
+            )
+        );
 
         $token = $this->userAccessTokenManager->create($duration);
 
