@@ -14,25 +14,30 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[
+    ORM\Entity(repositoryClass: UserRepository::class),
+    ORM\Table(name: '"user"'),
+    ORM\UniqueConstraint(name: 'username_uniq', fields: ['username']),
+]
 final class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
     public const DEFAULT_ROLE = UserRoles::ROLE_USER;
 
     private const USERNAME_MAX_LENGTH = 180;
 
-    #[ORM\Id]
-    #[ORM\Column(name: 'id', type: 'uuid')]
+    #[
+        ORM\Id,
+        ORM\Column(name: 'id', type: 'uuid'),
+    ]
     private Uuid $id;
 
     #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
     private ?DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(name: 'username', type: 'string', length: self::USERNAME_MAX_LENGTH, unique: true, nullable: false)]
+    #[ORM\Column(name: 'username', type: 'string', length: self::USERNAME_MAX_LENGTH, nullable: false)]
     private ?string $username = null;
 
-    #[ORM\Column(name: 'roles', type: 'json', nullable: false, options: ['default' => '[]'])]
+    #[ORM\Column(name: 'roles', type: 'json', nullable: false)]
     private array $roles = [];
 
     #[ORM\Column(name: 'password', type: 'string', nullable: false)]

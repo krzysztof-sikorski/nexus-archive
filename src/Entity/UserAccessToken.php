@@ -11,12 +11,17 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: UserAccessTokenRepository::class)]
-#[ORM\Table(name: 'user_access_token')]
+#[
+    ORM\Entity(repositoryClass: UserAccessTokenRepository::class),
+    ORM\Table(name: 'user_access_token'),
+    ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
+]
 final class UserAccessToken implements JsonSerializable
 {
-    #[ORM\Id]
-    #[ORM\Column(name: 'id', type: 'uuid')]
+    #[
+        ORM\Id,
+        ORM\Column(name: 'id', type: 'uuid'),
+    ]
     private Uuid $id;
 
     #[ORM\Column(name: 'value', type: 'text', unique: true, nullable: false)]
@@ -28,8 +33,10 @@ final class UserAccessToken implements JsonSerializable
     #[ORM\Column(name: 'valid_until', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $validUntil = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'owner_id', unique: false, nullable: false)]
+    #[
+        ORM\ManyToOne(targetEntity: User::class),
+        ORM\JoinColumn(name: 'owner_id', referencedColumnName: 'id', nullable: false),
+    ]
     private ?User $owner = null;
 
     public function __construct(?Uuid $id = null)
