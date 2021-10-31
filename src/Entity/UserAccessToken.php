@@ -8,7 +8,6 @@ use App\Repository\UserAccessTokenRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 use Symfony\Component\Uid\Uuid;
 
@@ -73,12 +72,6 @@ final class UserAccessToken implements JsonSerializable
         $this->validUntil = $validUntil;
     }
 
-    #[ArrayShape([
-        'id' => Uuid::class,
-        'value' => "null|string",
-        'createdAt' => "null|string",
-        'validUntil' => "null|string",
-    ])]
     public function jsonSerialize(): array
     {
         return [
