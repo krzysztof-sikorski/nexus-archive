@@ -17,7 +17,7 @@ class HomeController
         $this->twigEnvironment = $twigEnvironment;
     }
 
-    #[Route('/', name: 'home', methods: ['GET'])]
+    #[Route(path: '/', name: 'home', methods: ['GET'])]
     public function index(): Response
     {
         $content = $this->twigEnvironment->render('home/index.html.twig', [

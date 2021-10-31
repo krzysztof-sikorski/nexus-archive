@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FaviconController
 {
-    #[Route('/favicon.ico', name: 'favicon_ico', methods: ['GET'])]
+    #[Route(path: '/favicon.ico', name: 'favicon_ico', methods: ['GET'])]
     public function favicon(): Response
     {
         return new Response(null, Response::HTTP_GONE, []);
