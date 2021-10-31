@@ -20,10 +20,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 use function sprintf;
 
 #[AsCommand(
-    name: 'app:create:user-access-token',
+    name: 'app:user:create-access-token',
     description: 'Creates a new user access token',
 )]
-final class CreateUserAccessTokenCommand extends Command
+final class UserCreateAccessTokenCommand extends Command
 {
     private const ARGUMENT_NAME_DURATION = 'duration';
     private const DEFAULT_DURATION = '1 month';
