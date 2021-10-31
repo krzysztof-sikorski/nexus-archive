@@ -36,8 +36,8 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         }
 
         $user->setPassword($newHashedPassword);
-        $this->_em->persist($user);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
     }
 
     // /**
