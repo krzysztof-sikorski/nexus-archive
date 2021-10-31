@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Contract;
 
+use function array_filter;
+use function array_values;
 use function in_array;
 
 // TODO convert into native enum when PHP 8.1 is released
@@ -20,5 +22,21 @@ final class UserRoles
     public static function isValidRole(string $role): bool
     {
         return in_array($role, self::ALL_ROLES, true);
+    }
+
+    /**
+     * @param string[] $roles
+     * @return string[]
+     */
+    public static function normalize(array $roles): array
+    {
+        return array_values(
+            array_filter(
+                array: self::ALL_ROLES,
+                callback: static function (string $role) use ($roles) {
+                    return in_array($role, $roles, true);
+                }
+            )
+        );
     }
 }
