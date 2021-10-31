@@ -21,22 +21,22 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     private const USERNAME_MAX_LENGTH = 180;
 
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid')]
+    #[ORM\Column(name: 'id', type: 'uuid')]
     private Uuid $id;
 
-    #[ORM\Column(type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
     private ?DateTimeImmutable $createdAt;
 
-    #[ORM\Column(type: 'string', length: self::USERNAME_MAX_LENGTH, unique: true, nullable: false)]
+    #[ORM\Column(name: 'username', type: 'string', length: self::USERNAME_MAX_LENGTH, unique: true, nullable: false)]
     private ?string $username;
 
-    #[ORM\Column(type: 'json', nullable: false)]
+    #[ORM\Column(name: 'roles', type: 'json', nullable: false, options: ['default' => '[]'])]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(name: 'password', type: 'string', nullable: false)]
     private ?string $password;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'enabled', type: 'boolean', nullable: false)]
     private bool $enabled = false;
 
     public function __construct(?Uuid $id = null)

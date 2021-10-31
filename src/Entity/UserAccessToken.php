@@ -12,19 +12,20 @@ use JsonSerializable;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserAccessTokenRepository::class)]
+#[ORM\Table(name: 'user_access_token')]
 final class UserAccessToken implements JsonSerializable
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid')]
+    #[ORM\Column(name: 'id', type: 'uuid')]
     private Uuid $id;
 
-    #[ORM\Column(type: 'text', unique: true, nullable: false)]
+    #[ORM\Column(name: 'value', type: 'text', unique: true, nullable: false)]
     private ?string $value;
 
-    #[ORM\Column(type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
     private ?DateTimeImmutable $createdAt;
 
-    #[ORM\Column(type: 'datetimetz_immutable', nullable: true)]
+    #[ORM\Column(name: 'valid_until', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $validUntil;
 
     public function __construct(?Uuid $id = null)
