@@ -28,6 +28,8 @@ final class UserCreateAccessTokenCommand extends Command
     private const ARGUMENT_NAME_DURATION = 'duration';
     private const DEFAULT_DURATION = '1 month';
 
+    private ?string $durationStr = null;
+
     public function __construct(
         private UserAccessTokenManager $userAccessTokenManager,
         private SerializerInterface $serializer,
@@ -48,14 +50,13 @@ final class UserCreateAccessTokenCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $duration = $input->getOption(self::ARGUMENT_NAME_DURATION);
-        if (null === $duration) {
+        $this->durationStr = $input->getOption(self::ARGUMENT_NAME_DURATION);
+        if (null === $this->durationStr) {
             /** @var QuestionHelper $helper */
             $helper = $this->getHelper('question');
             $questionText = sprintf('Token duration (default: %s)?', self::DEFAULT_DURATION);
             $question = new Question($questionText, self::DEFAULT_DURATION);
-            $duration = $helper->ask($input, $output, $question);
-            $input->setOption(self::ARGUMENT_NAME_DURATION, $duration);
+            $this->durationStr = $helper->ask($input, $output, $question);
         }
     }
 
@@ -63,19 +64,16 @@ final class UserCreateAccessTokenCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $durationStr = $input->getOption(self::ARGUMENT_NAME_DURATION);
-
-        try {
-            $duration = DateInterval::createFromDateString($durationStr);
-        } catch (ErrorException $e) {
-            $io->error(sprintf('Invalid duration: %s', $durationStr));
+        $duration = DateInterval::createFromDateString($this->durationStr);
+        if (false === $duration instanceof DateInterval) {
+            $io->error(sprintf('Invalid duration: %s', $this->durationStr));
             return Command::FAILURE;
         }
 
         $io->info(
             sprintf(
                 'Selected duration: %s (parsed as: %s)',
-                $durationStr,
+                $this->durationStr,
                 $this->serializer->serialize($duration, 'json')
             )
         );
