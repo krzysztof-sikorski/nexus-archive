@@ -21,6 +21,18 @@ final class UserAccessTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, UserAccessToken::class);
     }
 
+    public function findByValue(string $value): ?UserAccessToken
+    {
+        $queryBuilder = $this->createQueryBuilder('uat')
+            ->andWhere('uat.value = :value')
+            ->setParameter('value', $value)
+            ->andWhere('uat.validUntil > current_timestamp()');
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
     // /**
     //  * @return UserAccessToken[] Returns an array of UserAccessToken objects
     //  */
