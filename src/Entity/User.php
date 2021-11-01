@@ -19,7 +19,7 @@ use Symfony\Component\Uid\Uuid;
     ORM\Table(name: '"user"'),
     ORM\UniqueConstraint(name: 'username_uniq', fields: ['username']),
 ]
-final class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
     public const DEFAULT_ROLE = UserRoles::ROLE_USER;
 

@@ -10,13 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 #[ORM\Embeddable]
-final class Response implements JsonSerializable
+class Response implements JsonSerializable
 {
     #[ORM\Column(name: 'completed_at', type: 'datetimetz_immutable', nullable: false)]
     private ?DateTimeImmutable $completedAt = null;
 
     #[ORM\Column(name: 'headers', type: 'json', nullable: true)]
-    private ?array $headers = null;
+    private mixed $headers = null;
 
     #[ORM\Column(name: 'status_code', type: 'integer', nullable: true)]
     private ?int $statusCode = null;
@@ -37,12 +37,12 @@ final class Response implements JsonSerializable
         $this->completedAt = $completedAt;
     }
 
-    public function getHeaders(): ?array
+    public function getHeaders(): mixed
     {
         return $this->headers;
     }
 
-    public function setHeaders(?array $headers): void
+    public function setHeaders(mixed $headers): void
     {
         $this->headers = $headers;
     }

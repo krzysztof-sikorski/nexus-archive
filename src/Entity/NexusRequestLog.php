@@ -19,7 +19,7 @@ use Symfony\Component\Uid\Uuid;
     ORM\UniqueConstraint(name: 'request_sort_uniq', columns: ['request_started_at', 'request_id']),
     ORM\Index(fields: ['submitter'], name: 'owner_fk_idx'),
 ]
-final class NexusRequestLog implements JsonSerializable
+class NexusRequestLog implements JsonSerializable
 {
     #[
         ORM\Id,

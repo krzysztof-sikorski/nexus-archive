@@ -16,7 +16,7 @@ use Symfony\Component\Uid\Uuid;
     ORM\Table(name: 'user_access_token'),
     ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
 ]
-final class UserAccessToken implements JsonSerializable
+class UserAccessToken implements JsonSerializable
 {
     #[
         ORM\Id,

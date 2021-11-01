@@ -10,7 +10,7 @@ use JsonSerializable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Embeddable]
-final class Request implements JsonSerializable
+class Request implements JsonSerializable
 {
     #[ORM\Column(name: 'id', type: 'text', nullable: false)]
     private ?string $id = null;
@@ -25,7 +25,7 @@ final class Request implements JsonSerializable
     private ?string $url = null;
 
     #[ORM\Column(name: 'headers', type: 'json', nullable: true)]
-    private ?array $headers = null;
+    private mixed $headers = null;
 
     #[ORM\Column(name: 'form_data', type: 'json', nullable: true)]
     private mixed $formData = null;
@@ -70,12 +70,12 @@ final class Request implements JsonSerializable
         $this->url = $url;
     }
 
-    public function getHeaders(): ?array
+    public function getHeaders(): mixed
     {
         return $this->headers;
     }
 
-    public function setHeaders(?array $headers): void
+    public function setHeaders(mixed $headers): void
     {
         $this->headers = $headers;
     }
