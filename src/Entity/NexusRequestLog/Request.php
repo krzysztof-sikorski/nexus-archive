@@ -15,6 +15,9 @@ class Request implements JsonSerializable
     #[ORM\Column(name: 'id', type: 'text', nullable: false)]
     private ?string $id = null;
 
+    #[ORM\Column(name: 'previous_id', type: 'text', nullable: true)]
+    private ?string $previousId = null;
+
     #[ORM\Column(name: 'started_at', type: 'datetimetz_immutable', nullable: false)]
     private ?DateTimeImmutable $startedAt = null;
 
@@ -38,6 +41,16 @@ class Request implements JsonSerializable
     public function setId(?string $id): void
     {
         $this->id = $id;
+    }
+
+    public function getPreviousId(): ?string
+    {
+        return $this->previousId;
+    }
+
+    public function setPreviousId(?string $previousId): void
+    {
+        $this->previousId = $previousId;
     }
 
     public function getStartedAt(): ?DateTimeImmutable
@@ -94,6 +107,7 @@ class Request implements JsonSerializable
     {
         return [
             'id' => $this->getId(),
+            'previousId' => $this->getPreviousId(),
             'startedAt' => $this->getStartedAt()?->format(DateTimeInterface::ISO8601),
             'method' => $this->getMethod(),
             'url' => $this->getUrl(),
