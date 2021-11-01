@@ -22,6 +22,8 @@ final class RequestFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add(child: 'id', type: TextType::class)
+            ->add(child: 'previousId', type: TextType::class)
             ->add(child: 'startedAt', type: DateTimeType::class, options: [
                 'html5' => true,
                 'input' => 'datetime_immutable',
