@@ -23,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
 {
     public const DEFAULT_ROLE = UserRoles::ROLE_USER;
 
-    private const USERNAME_MAX_LENGTH = 180;
+    public const USERNAME_MAX_LENGTH = 180;
 
     #[
         ORM\Id,
