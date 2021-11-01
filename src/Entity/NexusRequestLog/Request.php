@@ -28,7 +28,7 @@ final class Request implements JsonSerializable
     private ?array $headers = null;
 
     #[ORM\Column(name: 'form_data', type: 'json', nullable: true)]
-    private ?array $formData = null;
+    private mixed $formData = null;
 
     public function getId(): ?string
     {
@@ -80,12 +80,12 @@ final class Request implements JsonSerializable
         $this->headers = $headers;
     }
 
-    public function getFormData(): ?array
+    public function getFormData(): mixed
     {
         return $this->formData;
     }
 
-    public function setFormData(?array $formData): void
+    public function setFormData(mixed $formData): void
     {
         $this->formData = $formData;
     }
