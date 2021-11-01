@@ -7,7 +7,7 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FaviconController
+final class FaviconController
 {
     #[Route(path: '/favicon.ico', name: 'favicon_ico', methods: ['GET'])]
     public function favicon(): Response

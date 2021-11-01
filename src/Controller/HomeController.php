@@ -8,13 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
-class HomeController
+final class HomeController
 {
-    private Environment $twigEnvironment;
-
-    public function __construct(Environment $twigEnvironment)
+    public function __construct(private Environment $twigEnvironment)
     {
-        $this->twigEnvironment = $twigEnvironment;
     }
 
     #[Route(path: '/', name: 'home', methods: ['GET'])]
