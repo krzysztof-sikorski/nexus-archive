@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\NexusRequestLog;
 
+use App\DataTransformer\JsonToStringTransformer;
 use App\Entity\NexusRequestLog\Request;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -15,7 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class RequestFormType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -64,9 +64,6 @@ final class RequestFormType extends AbstractType
                 child: 'headers',
                 type: TextareaType::class,
                 options: [
-                    'constraints' => [
-                        new Assert\Json(),
-                    ],
                     'label' => 'Headers (JSON)',
                 ],
             )
@@ -74,12 +71,13 @@ final class RequestFormType extends AbstractType
                 child: 'formData',
                 type: TextareaType::class,
                 options: [
-                    'constraints' => [
-                        new Assert\Json(),
-                    ],
                     'label' => 'Form data (JSON)',
                 ],
             );
+
+        $jsonTransformer = new JsonToStringTransformer();
+        $builder->get('headers')->addViewTransformer($jsonTransformer);
+        $builder->get('formData')->addViewTransformer($jsonTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

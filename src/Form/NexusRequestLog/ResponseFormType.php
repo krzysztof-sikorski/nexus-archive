@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\NexusRequestLog;
 
+use App\DataTransformer\JsonToStringTransformer;
 use App\Entity\NexusRequestLog\Response;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -35,9 +36,6 @@ final class ResponseFormType extends AbstractType
                 child: 'headers',
                 type: TextareaType::class,
                 options: [
-                    'constraints' => [
-                        new Assert\Json(),
-                    ],
                     'label' => 'Headers (JSON)',
                 ],
             )
@@ -52,6 +50,9 @@ final class ResponseFormType extends AbstractType
             )
             ->add(child: 'statusLine', type: TextType::class)
             ->add(child: 'body', type: TextareaType::class);
+
+        $jsonTransformer = new JsonToStringTransformer();
+        $builder->get('headers')->addViewTransformer($jsonTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
