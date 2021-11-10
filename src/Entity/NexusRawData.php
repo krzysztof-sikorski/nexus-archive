@@ -6,7 +6,9 @@ namespace App\Entity;
 
 use App\Repository\NexusRawDataRepository;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Component\Uid\Uuid;
 
 #[
@@ -14,7 +16,7 @@ use Symfony\Component\Uid\Uuid;
     ORM\Table(name: 'nexus_raw_data'),
     ORM\Index(fields: ['submitter'], name: 'submitter_idx'),
 ]
-class NexusRawData
+class NexusRawData implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: 'uuid')]
@@ -70,5 +72,15 @@ class NexusRawData
     public function setData(array $data): void
     {
         $this->data = $data;
+    }
+
+    public function jsonSerialize():array
+    {
+        return [
+            'id' => $this->getId(),
+            'submittedAt' => $this->getSubmittedAt()?->format(DateTimeInterface::ISO8601),
+            'submitterId' => $this->getSubmitter()?->getId(),
+            'data' => $this->data,
+        ];
     }
 }
