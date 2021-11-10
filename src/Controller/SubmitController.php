@@ -11,10 +11,10 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Twig\Environment;
+use UnexpectedValueException;
 
 final class SubmitController
 {
@@ -26,7 +26,7 @@ final class SubmitController
     ) {
     }
 
-    #[Route(path: '/submit', name: 'submit')]
+    #[Route(path: '/submit', name: 'submit', methods: [Request::METHOD_GET, Request::METHOD_POST])]
     public function index(Request $request): Response
     {
         $form = $this->formFactory->create(
@@ -43,7 +43,7 @@ final class SubmitController
 
             try {
                 $this->nexusRequestLogManager->handleSubmission($nexusRequestLogSubmission);
-            } catch (\UnexpectedValueException $exception) {
+            } catch (UnexpectedValueException $exception) {
                 return new Response($exception->getMessage(), Response::HTTP_BAD_REQUEST, []);
             }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
@@ -14,7 +15,7 @@ final class HomeController
     {
     }
 
-    #[Route(path: '/', name: 'home', methods: ['GET'])]
+    #[Route(path: '/', name: 'home', methods: [Request::METHOD_GET])]
     public function index(): Response
     {
         $content = $this->twigEnvironment->render('home/index.html.twig', [
