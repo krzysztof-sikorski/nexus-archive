@@ -6,9 +6,6 @@
     "sessionId": {
       "type": "string"
     },
-    "tabId": {
-      "type": "integer"
-    },
     "requestId": {
       "type": "string"
     },
@@ -50,7 +47,6 @@
   },
   "required": [
     "sessionId",
-    "tabId",
     "requestId",
     "previousRequestId",
     "requestStartedAt",
