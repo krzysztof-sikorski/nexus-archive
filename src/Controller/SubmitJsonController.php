@@ -27,7 +27,7 @@ final class SubmitJsonController
     ) {
     }
 
-    #[Route(path: '/submit/json', name: 'submit_json', methods: [Request::METHOD_GET, Request::METHOD_POST])]
+    #[Route(path: '/submit-json', name: 'submit_json', methods: [Request::METHOD_GET, Request::METHOD_POST])]
     public function json(Request $request): Response
     {
         if ($request->isMethod(method: Request::METHOD_POST)) {
