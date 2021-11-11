@@ -1,3 +1,7 @@
+# Version 0.3.0
+
+- remove NexusRequestLog entity and all related code (form, repository, etc)
+
 # Version 0.2.0
 
 - create new form to handle data format expected from browser extension
