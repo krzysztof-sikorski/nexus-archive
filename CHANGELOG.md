@@ -1,3 +1,7 @@
+# Version 0.2.0
+
+- create new form to handle data format expected from browser extension
+
 # Version 0.1.1
 
 - fix parsing of JSON fields at cost of ignoring JSON syntax errors
