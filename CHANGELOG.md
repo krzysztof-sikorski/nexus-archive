@@ -1,3 +1,7 @@
+# Version 0.4.0
+
+- remove unnecessary properties from NexusRawData
+
 # Version 0.3.0
 
 - remove NexusRequestLog entity and all related code (form, repository, etc)
