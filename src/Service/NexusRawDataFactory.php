@@ -17,15 +17,6 @@ final class NexusRawDataFactory
 
         $data = get_object_vars($decodedJsonData);
 
-        if (array_key_exists(key: 'sessionId', array: $data)) {
-            $nexusRawData->setSessionId($data['sessionId']);
-        }
-        if (array_key_exists(key: 'requestId', array: $data)) {
-            $nexusRawData->setRequestId($data['requestId']);
-        }
-        if (array_key_exists(key: 'previousRequestId', array: $data)) {
-            $nexusRawData->setPreviousRequestId($data['previousRequestId']);
-        }
         if (array_key_exists(key: 'requestStartedAt', array: $data)) {
             $requestStartedAt = new DateTimeImmutable($data['requestStartedAt']);
             $nexusRawData->setRequestStartedAt($requestStartedAt);

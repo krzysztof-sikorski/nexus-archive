@@ -11,7 +11,6 @@ final class NexusRawDataSubmissionResult implements JsonSerializable
     public const ERROR_SOURCE_JSON_DECODE = 'json-decode';
     public const ERROR_SOURCE_JSON_SCHEMA = 'json-schema';
     public const ERROR_SOURCE_ACCESS_TOKEN = 'access-token';
-    public const ERROR_SOURCE_DUPLICATE_ENTRY = 'duplicate-entry';
 
     public function __construct(
         private bool $isValid,

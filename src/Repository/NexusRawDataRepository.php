@@ -21,19 +21,6 @@ final class NexusRawDataRepository extends ServiceEntityRepository
         parent::__construct($registry, NexusRawData::class);
     }
 
-    public function findByRequestIds(NexusRawData $nexusRawData): mixed
-    {
-        $queryBuilder = $this->createQueryBuilder('nrd')
-            ->andWhere('nrd.sessionId = :sessionId')
-            ->setParameter('sessionId', $nexusRawData->getSessionId())
-            ->andWhere('nrd.requestId = :requestId')
-            ->setParameter('requestId', $nexusRawData->getRequestId());
-
-        $query = $queryBuilder->getQuery();
-
-        return $query->getOneOrNullResult();
-    }
-
     // /**
     //  * @return NexusRawData[] Returns an array of NexusRawData objects
     //  */

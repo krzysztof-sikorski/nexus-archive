@@ -3,18 +3,6 @@
   "$id": "https://nexus-archive.zerozero.pl/submit-json",
   "type": "object",
   "properties": {
-    "sessionId": {
-      "type": "string"
-    },
-    "requestId": {
-      "type": "string"
-    },
-    "previousRequestId": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "requestStartedAt": {
       "type": "string",
       "format": "date-time"
@@ -46,9 +34,6 @@
     }
   },
   "required": [
-    "sessionId",
-    "requestId",
-    "previousRequestId",
     "requestStartedAt",
     "responseCompletedAt",
     "method",

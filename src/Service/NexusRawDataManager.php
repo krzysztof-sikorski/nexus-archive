@@ -6,7 +6,6 @@ namespace App\Service;
 
 use App\Contract\Service\ClockInterface;
 use App\DTO\NexusRawDataSubmissionResult;
-use App\Repository\NexusRawDataRepository;
 use App\Repository\UserAccessTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -17,7 +16,6 @@ final class NexusRawDataManager
         private NexusRawDataFactory $nexusRawDataFactory,
         private EntityManagerInterface $entityManager,
         private UserAccessTokenRepository $userAccessTokenRepository,
-        private NexusRawDataRepository $nexusRawDataRepository,
     ) {
     }
 
@@ -37,22 +35,6 @@ final class NexusRawDataManager
             return new NexusRawDataSubmissionResult(
                 isValid: false,
                 errorSource: NexusRawDataSubmissionResult::ERROR_SOURCE_ACCESS_TOKEN,
-                errors: $errors
-            );
-        }
-
-        $duplicateEntry = $this->nexusRawDataRepository->findByRequestIds($nexusRawData);
-        if (null !== $duplicateEntry) {
-            $errors = [
-                sprintf(
-                    'Entry with (sessionId=%s, requestId=%s) has already been submitted!',
-                    $nexusRawData->getSessionId(),
-                    $nexusRawData->getRequestId(),
-                ),
-            ];
-            return new NexusRawDataSubmissionResult(
-                isValid: false,
-                errorSource: NexusRawDataSubmissionResult::ERROR_SOURCE_DUPLICATE_ENTRY,
                 errors: $errors
             );
         }

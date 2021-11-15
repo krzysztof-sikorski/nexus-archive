@@ -14,8 +14,8 @@ use Symfony\Component\Uid\Uuid;
 #[
     ORM\Entity(repositoryClass: NexusRawDataRepository::class),
     ORM\Table(name: 'nexus_raw_data'),
-    ORM\UniqueConstraint(name: 'nexus_raw_data_uniq', columns: ['session_id', 'request_id']),
-    ORM\Index(fields: ['submitter'], name: 'nexus_raw_data_submitter_idx'),
+    ORM\Index(columns: ['submitted_at', 'request_started_at', 'id'], name: 'nexus_raw_data_sorting_idx'),
+    ORM\Index(columns: ['submitter_id'], name: 'nexus_raw_data_submitter_idx'),
 ]
 class NexusRawData implements JsonSerializable
 {
@@ -31,15 +31,6 @@ class NexusRawData implements JsonSerializable
         ORM\JoinColumn(name: 'submitter_id', referencedColumnName: 'id', nullable: false),
     ]
     private ?User $submitter = null;
-
-    #[ORM\Column(name: 'session_id', type: 'text', nullable: false)]
-    private ?string $sessionId = null;
-
-    #[ORM\Column(name: 'request_id', type: 'text', nullable: false)]
-    private ?string $requestId = null;
-
-    #[ORM\Column(name: 'previous_request_id', type: 'text', nullable: true)]
-    private ?string $previousRequestId = null;
 
     #[ORM\Column(name: 'request_started_at', type: 'datetimetz_immutable', nullable: false)]
     private ?DateTimeImmutable $requestStartedAt = null;
@@ -70,9 +61,6 @@ class NexusRawData implements JsonSerializable
             'id' => $this->getId(),
             'submittedAt' => $this->getSubmittedAt()?->format(DateTimeInterface::ISO8601),
             'submitterId' => $this->getSubmitter()?->getId(),
-            'sessionId' => $this->getSessionId(),
-            'requestId' => $this->getRequestId(),
-            'previousRequestId' => $this->getPreviousRequestId(),
             'requestStartedAt' => $this->getRequestStartedAt()?->format(DateTimeInterface::ISO8601),
             'responseCompletedAt' => $this->getResponseCompletedAt()?->format(DateTimeInterface::ISO8601),
             'method' => $this->getMethod(),
@@ -110,36 +98,6 @@ class NexusRawData implements JsonSerializable
     public function setSubmitter(?User $submitter): void
     {
         $this->submitter = $submitter;
-    }
-
-    public function getSessionId(): ?string
-    {
-        return $this->sessionId;
-    }
-
-    public function setSessionId(?string $sessionId): void
-    {
-        $this->sessionId = $sessionId;
-    }
-
-    public function getRequestId(): ?string
-    {
-        return $this->requestId;
-    }
-
-    public function setRequestId(?string $requestId): void
-    {
-        $this->requestId = $requestId;
-    }
-
-    public function getPreviousRequestId(): ?string
-    {
-        return $this->previousRequestId;
-    }
-
-    public function setPreviousRequestId(?string $previousRequestId): void
-    {
-        $this->previousRequestId = $previousRequestId;
     }
 
     public function getRequestStartedAt(): ?DateTimeImmutable
