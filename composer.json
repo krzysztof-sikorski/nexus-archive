@@ -30,31 +30,31 @@
     "doctrine/doctrine-bundle": "^2.5",
     "doctrine/doctrine-migrations-bundle": "^3.2",
     "doctrine/orm": "^2.10",
-    "opis/json-schema": "^2.2",
-    "symfony/console": "^5.3",
-    "symfony/dotenv": "^5.3",
-    "symfony/flex": "^1.3",
-    "symfony/form": "^5.3",
-    "symfony/framework-bundle": "^5.3",
+    "opis/json-schema": "^2.3",
+    "symfony/console": "^6.0",
+    "symfony/dotenv": "^6.0",
+    "symfony/flex": "^v1.18",
+    "symfony/form": "^6.0",
+    "symfony/framework-bundle": "^6.0",
     "symfony/monolog-bundle": "^3.7",
-    "symfony/password-hasher": "^5.3",
-    "symfony/proxy-manager-bridge": "^5.3",
-    "symfony/runtime": "^5.3",
-    "symfony/security-bundle": "^5.3",
-    "symfony/serializer": "^5.3",
-    "symfony/twig-bundle": "^5.3",
-    "symfony/uid": "^5.3",
-    "symfony/validator": "^5.3",
-    "symfony/yaml": "^5.3",
-    "twig/extra-bundle": "^3.0",
-    "twig/twig": "^3.0"
+    "symfony/password-hasher": "^6.0",
+    "symfony/proxy-manager-bridge": "^6.0",
+    "symfony/runtime": "^6.0",
+    "symfony/security-bundle": "^6.0",
+    "symfony/serializer": "^6.0",
+    "symfony/twig-bundle": "^6.0",
+    "symfony/uid": "^6.0",
+    "symfony/validator": "^6.0",
+    "symfony/yaml": "^6.0",
+    "twig/extra-bundle": "^3.3",
+    "twig/twig": "^3.3"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "symfony/debug-bundle": "^5.3",
-    "symfony/maker-bundle": "^1.34",
-    "symfony/stopwatch": "^5.3",
-    "symfony/web-profiler-bundle": "^5.3"
+    "symfony/debug-bundle": "^6.0",
+    "symfony/maker-bundle": "^1.36",
+    "symfony/stopwatch": "^6.0",
+    "symfony/web-profiler-bundle": "^6.0"
   },
   "conflict": {
     "symfony/symfony": "*"
@@ -81,7 +81,12 @@
       "*": "dist"
     },
     "optimize-autoloader": true,
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true,
+      "symfony/flex": true,
+      "symfony/runtime": true
+    }
   },
   "scripts": {
     "auto-scripts": {
@@ -98,7 +103,7 @@
   "extra": {
     "symfony": {
       "allow-contrib": false,
-      "require": "5.3.*"
+      "require": "6.0.*"
     }
   }
 }
