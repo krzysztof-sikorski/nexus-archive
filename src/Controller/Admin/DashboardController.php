@@ -8,6 +8,7 @@ use App\Repository\NexusRawDataRepository;
 use App\Repository\UserAccessTokenRepository;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
@@ -70,5 +71,12 @@ final class DashboardController extends AbstractDashboardController
     {
         return parent::configureUserMenu($user)
             ->displayUserAvatar(false);
+    }
+
+    public function configureCrud(): Crud
+    {
+        return parent::configureCrud()
+            ->setDateTimeFormat('YYYY-MM-dd HH:mm:ss z')
+            ->showEntityActionsInlined();
     }
 }
