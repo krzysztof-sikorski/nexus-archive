@@ -33,6 +33,16 @@ final class UserAccessTokenRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function getTotalCount(): int
+    {
+        $queryBuilder = $this->createQueryBuilder('uat')
+            ->select('COUNT(uat)');
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
     // /**
     //  * @return UserAccessToken[] Returns an array of UserAccessToken objects
     //  */

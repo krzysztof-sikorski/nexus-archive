@@ -51,6 +51,16 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         return $query->getOneOrNullResult();
     }
 
+    public function getTotalCount(): int
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->select('COUNT(u)');
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
