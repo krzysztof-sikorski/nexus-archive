@@ -23,8 +23,6 @@ final class UserCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
-            ->renderContentMaximized()
-            ->setTimezone('UTC')
             ->setSearchFields(['id', 'username'])
             ->setDefaultSort(['createdAt' => 'DESC']);
     }
