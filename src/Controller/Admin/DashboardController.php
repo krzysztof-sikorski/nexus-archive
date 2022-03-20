@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
 use App\Repository\NexusRawDataRepository;
 use App\Repository\UserAccessTokenRepository;
 use App\Repository\UserRepository;
@@ -64,7 +65,7 @@ final class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+        yield MenuItem::linkToCrud('Users', 'fas fa-users', User::class);
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu
