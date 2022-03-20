@@ -15,7 +15,7 @@ final class HomeController
     {
     }
 
-    #[Route(path: '/', name: 'home', methods: [Request::METHOD_GET])]
+    #[Route(path: '/', name: 'app_home', methods: [Request::METHOD_GET])]
     public function index(): Response
     {
         $content = $this->twigEnvironment->render('home/index.html.twig', [
