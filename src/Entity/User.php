@@ -51,6 +51,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         $this->id = $id ?? Uuid::v4();
     }
 
+    public function __toString(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
