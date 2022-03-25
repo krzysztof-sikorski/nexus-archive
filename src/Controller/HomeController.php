@@ -18,10 +18,8 @@ final class HomeController
     #[Route(path: '/', name: 'app_home', methods: [Request::METHOD_GET])]
     public function index(): Response
     {
-        $content = $this->twigEnvironment->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        $content = $this->twigEnvironment->render(name: 'home/index.html.twig');
 
-        return new Response($content);
+        return new Response(content: $content);
     }
 }

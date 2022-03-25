@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Twig\Environment;
 
-final class LoginController extends AbstractController
+final class LoginController
 {
+    public function __construct(private Environment $twigEnvironment)
+    {
+    }
+
     #[Route('/login', name: 'app_login')]
     public function index(
         AuthenticationUtils $authenticationUtils
     ): Response {
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
+        $context = [
+            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'last_username' => $authenticationUtils->getLastUsername(),
+        ];
+        $content = $this->twigEnvironment->render(name: 'login/index.html.twig', context: $context);
 
-        return $this->render(
-            'login/index.html.twig',
-            [
-                'error' => $error,
-                'last_username' => $lastUsername,
-            ]
-        );
+        return new Response(content: $content);
     }
 }

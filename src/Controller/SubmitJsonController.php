@@ -28,8 +28,9 @@ final class SubmitJsonController
     }
 
     #[Route(path: '/submit-json', name: 'app_submit_json', methods: [Request::METHOD_GET, Request::METHOD_POST])]
-    public function json(Request $request): Response
-    {
+    public function json(
+        Request $request
+    ): Response {
         if ($request->isMethod(method: Request::METHOD_POST)) {
             $userAccessTokenValue = $request->request->get(key: 'userAccessToken');
             $jsonData = $request->request->get(key: 'jsonData');
@@ -45,17 +46,20 @@ final class SubmitJsonController
                 return new JsonResponse(data: $responseData, status: Response::HTTP_BAD_REQUEST);
             }
 
-            $validationResult = $this->validator->validate($decodedJsonData);
+            $validationResult = $this->validator->validate(decodedJsonData: $decodedJsonData);
             if (false === $validationResult->isValid()) {
                 return new JsonResponse(data: $validationResult, status: Response::HTTP_BAD_REQUEST);
             }
 
-            $submissionResult = $this->nexusRawDataManager->handleSubmission($userAccessTokenValue, $decodedJsonData);
+            $submissionResult = $this->nexusRawDataManager->handleSubmission(
+                userAccessTokenValue: $userAccessTokenValue,
+                decodedJsonData: $decodedJsonData
+            );
 
             return new JsonResponse(data: $submissionResult, status: Response::HTTP_CREATED);
         }
 
-        $content = $this->twigEnvironment->render('submit-json/index.html.twig');
+        $content = $this->twigEnvironment->render(name: 'submit-json/index.html.twig');
 
         return new Response($content);
     }
