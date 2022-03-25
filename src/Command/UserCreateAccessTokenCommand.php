@@ -72,7 +72,7 @@ final class UserCreateAccessTokenCommand extends Command
 
         $ownerUsername = $input->getOption(self::ARGUMENT_NAME_OWNER);
         while (true) {
-            if (null === $ownerUsername) {
+            while (null === $ownerUsername) {
                 $ownerUsername = $helper->ask($input, $output, $question);
             }
             $this->owner = $this->userRepository->findByUsername($ownerUsername);
