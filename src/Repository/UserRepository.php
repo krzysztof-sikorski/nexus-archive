@@ -23,7 +23,7 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, User::class);
+        parent::__construct(registry: $registry, entityClass: User::class);
     }
 
     /**
@@ -32,19 +32,21 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
+            throw new UnsupportedUserException(
+                message: sprintf('Instances of "%s" are not supported.', get_class($user))
+            );
         }
 
-        $user->setPassword($newHashedPassword);
+        $user->setPassword(password: $newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
 
     public function findByUsername(string $username): ?User
     {
-        $queryBuilder = $this->createQueryBuilder('u')
+        $queryBuilder = $this->createQueryBuilder(alias: 'u')
             ->andWhere('u.username = :username')
-            ->setParameter('username', $username);
+            ->setParameter(key: 'username', value: $username);
 
         $query = $queryBuilder->getQuery();
 
@@ -53,8 +55,8 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
 
     public function getTotalCount(): int
     {
-        $queryBuilder = $this->createQueryBuilder('u')
-            ->select('COUNT(u)');
+        $queryBuilder = $this->createQueryBuilder(alias: 'u')
+            ->select(select: 'COUNT(u)');
 
         $query = $queryBuilder->getQuery();
 

@@ -18,14 +18,14 @@ final class UserAccessTokenRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, UserAccessToken::class);
+        parent::__construct(registry: $registry, entityClass: UserAccessToken::class);
     }
 
     public function findByValue(string $value): ?UserAccessToken
     {
-        $queryBuilder = $this->createQueryBuilder('uat')
+        $queryBuilder = $this->createQueryBuilder(alias: 'uat')
             ->andWhere('uat.value = :value')
-            ->setParameter('value', $value)
+            ->setParameter(key: 'value', value: $value)
             ->andWhere('uat.validUntil > current_timestamp()');
 
         $query = $queryBuilder->getQuery();
@@ -35,8 +35,8 @@ final class UserAccessTokenRepository extends ServiceEntityRepository
 
     public function getTotalCount(): int
     {
-        $queryBuilder = $this->createQueryBuilder('uat')
-            ->select('COUNT(uat)');
+        $queryBuilder = $this->createQueryBuilder(alias: 'uat')
+            ->select(select: 'COUNT(uat)');
 
         $query = $queryBuilder->getQuery();
 

@@ -19,13 +19,13 @@ final class NexusRawDataRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, NexusRawData::class);
+        parent::__construct(registry: $registry, entityClass: NexusRawData::class);
     }
 
     public function getTotalCount(): int
     {
-        $queryBuilder = $this->createQueryBuilder('nrd')
-            ->select('COUNT(nrd)');
+        $queryBuilder = $this->createQueryBuilder(alias: 'nrd')
+            ->select(select: 'COUNT(nrd)');
 
         $query = $queryBuilder->getQuery();
 
@@ -34,11 +34,11 @@ final class NexusRawDataRepository extends ServiceEntityRepository
 
     public function getPartialCount(DateTimeImmutable $from, DateTimeImmutable $to): int
     {
-        $queryBuilder = $this->createQueryBuilder('nrd')
-            ->select('COUNT(nrd)')
-            ->where('nrd.submittedAt BETWEEN :from AND :to')
-            ->setParameter('from', $from)
-            ->setParameter('to', $to);
+        $queryBuilder = $this->createQueryBuilder(alias: 'nrd')
+            ->select(select: 'COUNT(nrd)')
+            ->where(predicates: 'nrd.submittedAt BETWEEN :from AND :to')
+            ->setParameter(key: 'from', value: $from)
+            ->setParameter(key: 'to', value: $to);
 
         $query = $queryBuilder->getQuery();
 
