@@ -26,36 +26,36 @@ final class NexusRawDataCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return parent::configureCrud($crud)
-            ->setSearchFields(['id', 'url'])
-            ->setDefaultSort(['submittedAt' => 'DESC']);
+        return parent::configureCrud(crud: $crud)
+            ->setSearchFields(fieldNames: ['id', 'url'])
+            ->setDefaultSort(sortFieldsAndOrder: ['submittedAt' => 'DESC']);
     }
 
     public function configureFields(string $pageName): iterable
     {
-        yield IdField::new('id')->setMaxLength(-1)->setDisabled();
-        yield DateTimeField::new('submittedAt');
-        yield AssociationField::new('submitter')->onlyOnDetail();
-        yield DateTimeField::new('requestStartedAt')->onlyOnDetail();
-        yield DateTimeField::new('responseCompletedAt')->onlyOnDetail();
-        yield TextField::new('method');
-        yield TextField::new('url')->setMaxLength(40);
-        yield TextareaField::new('formData')->onlyOnDetail();
-        yield TextEditorField::new('responseBody')->onlyOnDetail();
+        yield IdField::new(propertyName: 'id')->setMaxLength(length: -1)->setDisabled(disabled: true);
+        yield DateTimeField::new(propertyName: 'submittedAt');
+        yield AssociationField::new(propertyName: 'submitter')->onlyOnDetail();
+        yield DateTimeField::new(propertyName: 'requestStartedAt')->onlyOnDetail();
+        yield DateTimeField::new(propertyName: 'responseCompletedAt')->onlyOnDetail();
+        yield TextField::new(propertyName: 'method');
+        yield TextField::new(propertyName: 'url')->setMaxLength(length: 40);
+        yield TextareaField::new(propertyName: 'formData')->onlyOnDetail();
+        yield TextEditorField::new(propertyName: 'responseBody')->onlyOnDetail();
     }
 
     public function configureFilters(Filters $filters): Filters
     {
-        return parent::configureFilters($filters)
-            ->add('id')
-            ->add('url')
-            ->add('method');
+        return parent::configureFilters(filters: $filters)
+            ->add(propertyNameOrFilter: 'id')
+            ->add(propertyNameOrFilter: 'url')
+            ->add(propertyNameOrFilter: 'method');
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        return parent::configureActions($actions)
-            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+        return parent::configureActions(actions: $actions)
+            ->add(pageName: Crud::PAGE_INDEX, actionNameOrObject: Action::DETAIL)
             ->disable(
                 Action::BATCH_DELETE,
                 Action::DELETE,

@@ -22,25 +22,25 @@ final class UserCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return parent::configureCrud($crud)
-            ->setSearchFields(['id', 'username'])
-            ->setDefaultSort(['createdAt' => 'DESC']);
+        return parent::configureCrud(crud: $crud)
+            ->setSearchFields(fieldNames: ['id', 'username'])
+            ->setDefaultSort(sortFieldsAndOrder: ['createdAt' => 'DESC']);
     }
 
     public function configureFields(string $pageName): iterable
     {
-        yield IdField::new('id')->setMaxLength(-1)->setDisabled();
-        yield TextField::new('username');
-        yield DateTimeField::new('createdAt');
-        yield BooleanField::new('enabled');
+        yield IdField::new(propertyName: 'id')->setMaxLength(length: -1)->setDisabled();
+        yield TextField::new(propertyName: 'username');
+        yield DateTimeField::new(propertyName: 'createdAt');
+        yield BooleanField::new(propertyName: 'enabled');
     }
 
     public function configureFilters(Filters $filters): Filters
     {
-        return parent::configureFilters($filters)
-            ->add('id')
-            ->add('username')
-            ->add('createdAt')
-            ->add('enabled');
+        return parent::configureFilters(filters: $filters)
+            ->add(propertyNameOrFilter: 'id')
+            ->add(propertyNameOrFilter: 'username')
+            ->add(propertyNameOrFilter: 'createdAt')
+            ->add(propertyNameOrFilter: 'enabled');
     }
 }

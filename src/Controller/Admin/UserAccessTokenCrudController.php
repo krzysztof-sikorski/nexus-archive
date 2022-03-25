@@ -22,27 +22,27 @@ final class UserAccessTokenCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return parent::configureCrud($crud)
-            ->setSearchFields(['id', 'value'])
-            ->setDefaultSort(['createdAt' => 'DESC']);
+        return parent::configureCrud(crud: $crud)
+            ->setSearchFields(fieldNames: ['id', 'value'])
+            ->setDefaultSort(sortFieldsAndOrder: ['createdAt' => 'DESC']);
     }
 
     public function configureFields(string $pageName): iterable
     {
-        yield IdField::new('id')->setMaxLength(-1)->setDisabled();
-        yield TextField::new('value')->setMaxLength(40);
-        yield DateTimeField::new('createdAt');
-        yield DateTimeField::new('validUntil');
-        yield AssociationField::new('owner')->autocomplete();
+        yield IdField::new(propertyName: 'id')->setMaxLength(length: -1)->setDisabled(disabled: true);
+        yield TextField::new(propertyName: 'value')->setMaxLength(length: 40);
+        yield DateTimeField::new(propertyName: 'createdAt');
+        yield DateTimeField::new(propertyName: 'validUntil');
+        yield AssociationField::new(propertyName: 'owner')->autocomplete();
     }
 
     public function configureFilters(Filters $filters): Filters
     {
-        return parent::configureFilters($filters)
-            ->add('id')
-            ->add('value')
-            ->add('createdAt')
-            ->add('validUntil')
-            ->add('owner');
+        return parent::configureFilters(filters: $filters)
+            ->add(propertyNameOrFilter: 'id')
+            ->add(propertyNameOrFilter: 'value')
+            ->add(propertyNameOrFilter: 'createdAt')
+            ->add(propertyNameOrFilter: 'validUntil')
+            ->add(propertyNameOrFilter: 'owner');
     }
 }
