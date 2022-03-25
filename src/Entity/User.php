@@ -4,66 +4,47 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\Entity\BaseEntityInterface;
 use App\Contract\UserRoles;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Uid\Uuid;
 
 #[
     ORM\Entity(repositoryClass: UserRepository::class),
     ORM\Table(name: '"user"'),
     ORM\UniqueConstraint(name: 'username_uniq', fields: ['username']),
 ]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+class User extends BaseEntity
+    implements BaseEntityInterface, UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
     public const DEFAULT_ROLE = UserRoles::ROLE_USER;
 
     public const USERNAME_MAX_LENGTH = 180;
 
-    #[
-        ORM\Id,
-        ORM\Column(name: 'id', type: 'uuid'),
-    ]
-    private Uuid $id;
-
-    #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     private ?DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(name: 'username', type: 'string', length: self::USERNAME_MAX_LENGTH, nullable: false)]
+    #[ORM\Column(name: 'username', type: Types::STRING, length: self::USERNAME_MAX_LENGTH, nullable: false)]
     private ?string $username = null;
 
-    #[ORM\Column(name: 'roles', type: 'json', nullable: false)]
+    #[ORM\Column(name: 'roles', type: Types::JSON, nullable: false)]
     private array $roles = [];
 
-    #[ORM\Column(name: 'password', type: 'string', nullable: false)]
+    #[ORM\Column(name: 'password', type: Types::STRING, nullable: false)]
     private ?string $password = null;
 
-    #[ORM\Column(name: 'enabled', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'enabled', type: Types::BOOLEAN, nullable: false)]
     private bool $enabled = false;
-
-    public function __construct(?Uuid $id = null)
-    {
-        $this->id = $id ?? Uuid::v4();
-    }
 
     public function __toString(): string
     {
         return $this->getUserIdentifier();
-    }
-
-    public function getId(): ?Uuid
-    {
-        return $this->id;
-    }
-
-    public function setId(Uuid $id): void
-    {
-        $this->id = $id;
     }
 
     public function getCreatedAt(): ?DateTimeImmutable
@@ -107,7 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         $roles = $this->roles;
 
         // guarantee every user at least has default role
-        if (false === in_array(self::DEFAULT_ROLE, $roles, true)) {
+        if (false === in_array(needle: self::DEFAULT_ROLE, haystack: $roles, strict: true)) {
             $roles[] = self::DEFAULT_ROLE;
         }
 
@@ -166,7 +147,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     {
         return [
             'id' => $this->getId(),
-            'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
+            'createdAt' => $this->getCreatedAt()?->format(format: DateTimeInterface::ISO8601),
             'userIdentifier' => $this->getUserIdentifier(),
             'roles' => $this->getRoles(),
             'enabled' => $this->isEnabled(),

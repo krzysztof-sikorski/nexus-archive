@@ -4,33 +4,28 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\Entity\BaseEntityInterface;
 use App\Repository\UserAccessTokenRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use Symfony\Component\Uid\Uuid;
 
 #[
     ORM\Entity(repositoryClass: UserAccessTokenRepository::class),
     ORM\Table(name: 'user_access_token'),
     ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
 ]
-class UserAccessToken implements JsonSerializable
+class UserAccessToken extends BaseEntity implements BaseEntityInterface, JsonSerializable
 {
-    #[
-        ORM\Id,
-        ORM\Column(name: 'id', type: 'uuid'),
-    ]
-    private Uuid $id;
-
-    #[ORM\Column(name: 'value', type: 'text', unique: true, nullable: false)]
+    #[ORM\Column(name: 'value', type: Types::TEXT, unique: true, nullable: false)]
     private ?string $value = null;
 
-    #[ORM\Column(name: 'created_at', type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     private ?DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(name: 'valid_until', type: 'datetimetz_immutable', nullable: true)]
+    #[ORM\Column(name: 'valid_until', type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $validUntil = null;
 
     #[
@@ -38,21 +33,6 @@ class UserAccessToken implements JsonSerializable
         ORM\JoinColumn(name: 'owner_id', referencedColumnName: 'id', nullable: false),
     ]
     private ?User $owner = null;
-
-    public function __construct(?Uuid $id = null)
-    {
-        $this->id = $id ?? Uuid::v4();
-    }
-
-    public function getId(): Uuid
-    {
-        return $this->id;
-    }
-
-    public function setId(Uuid $id): void
-    {
-        $this->id = $id;
-    }
 
     public function getValue(): ?string
     {
@@ -99,8 +79,8 @@ class UserAccessToken implements JsonSerializable
         return [
             'id' => $this->getId(),
             'value' => $this->getValue(),
-            'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
-            'validUntil' => $this->getValidUntil()?->format(DateTimeInterface::ISO8601),
+            'createdAt' => $this->getCreatedAt()?->format(format: DateTimeInterface::ISO8601),
+            'validUntil' => $this->getValidUntil()?->format(format: DateTimeInterface::ISO8601),
             'owner_id' => $this->getOwner()?->getId(),
         ];
     }

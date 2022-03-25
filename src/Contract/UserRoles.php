@@ -21,7 +21,7 @@ final class UserRoles
 
     public static function isValidRole(string $role): bool
     {
-        return in_array($role, self::ALL_ROLES, true);
+        return in_array(needle: $role, haystack: self::ALL_ROLES, strict: true);
     }
 
     /**
@@ -30,13 +30,9 @@ final class UserRoles
      */
     public static function normalize(array $roles): array
     {
-        return array_values(
-            array_filter(
-                array: self::ALL_ROLES,
-                callback: static function (string $role) use ($roles) {
-                    return in_array($role, $roles, true);
-                }
-            )
-        );
+        $callback = static function (string $role) use ($roles) {
+            return in_array($role, $roles, true);
+        };
+        return array_values(array: array_filter(array: self::ALL_ROLES, callback: $callback));
     }
 }

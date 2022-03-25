@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\Entity\BaseEntityInterface;
 use App\Repository\NexusRawDataRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use Symfony\Component\Uid\Uuid;
 
 #[
     ORM\Entity(repositoryClass: NexusRawDataRepository::class),
@@ -17,13 +18,9 @@ use Symfony\Component\Uid\Uuid;
     ORM\Index(columns: ['submitted_at', 'request_started_at', 'id'], name: 'nexus_raw_data_sorting_idx'),
     ORM\Index(columns: ['submitter_id'], name: 'nexus_raw_data_submitter_idx'),
 ]
-class NexusRawData implements JsonSerializable
+class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerializable
 {
-    #[ORM\Id]
-    #[ORM\Column(name: 'id', type: 'uuid')]
-    private Uuid $id;
-
-    #[ORM\Column(name: 'submitted_at', type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'submitted_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     private ?DateTimeImmutable $submittedAt = null;
 
     #[
@@ -32,28 +29,23 @@ class NexusRawData implements JsonSerializable
     ]
     private ?User $submitter = null;
 
-    #[ORM\Column(name: 'request_started_at', type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'request_started_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     private ?DateTimeImmutable $requestStartedAt = null;
 
-    #[ORM\Column(name: 'response_completed_at', type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'response_completed_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     private ?DateTimeImmutable $responseCompletedAt = null;
 
-    #[ORM\Column(name: 'method', type: 'text', nullable: false)]
+    #[ORM\Column(name: 'method', type: Types::TEXT, nullable: false)]
     private ?string $method = null;
 
-    #[ORM\Column(name: 'url', type: 'text', nullable: false)]
+    #[ORM\Column(name: 'url', type: Types::TEXT, nullable: false)]
     private ?string $url = null;
 
-    #[ORM\Column(name: 'form_data', type: 'json', nullable: true)]
+    #[ORM\Column(name: 'form_data', type: Types::JSON, nullable: true)]
     private mixed $formData = null;
 
-    #[ORM\Column(name: 'response_body', type: 'text', nullable: false)]
+    #[ORM\Column(name: 'response_body', type: Types::TEXT, nullable: false)]
     private ?string $responseBody = null;
-
-    public function __construct(?Uuid $id = null)
-    {
-        $this->id = $id ?? Uuid::v4();
-    }
 
     public function jsonSerialize(): array
     {
@@ -68,16 +60,6 @@ class NexusRawData implements JsonSerializable
             'formData' => $this->getFormData(),
             'responseBody' => $this->getResponseBody(),
         ];
-    }
-
-    public function getId(): Uuid
-    {
-        return $this->id;
-    }
-
-    public function setId(Uuid $id): void
-    {
-        $this->id = $id;
     }
 
     public function getSubmittedAt(): ?DateTimeImmutable
