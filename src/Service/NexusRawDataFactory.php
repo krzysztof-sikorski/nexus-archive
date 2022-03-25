@@ -15,27 +15,27 @@ final class NexusRawDataFactory
     {
         $nexusRawData = new NexusRawData();
 
-        $data = get_object_vars($decodedJsonData);
+        $data = get_object_vars(object: $decodedJsonData);
 
         if (array_key_exists(key: 'requestStartedAt', array: $data)) {
-            $requestStartedAt = new DateTimeImmutable($data['requestStartedAt']);
-            $nexusRawData->setRequestStartedAt($requestStartedAt);
+            $requestStartedAt = new DateTimeImmutable(datetime: $data['requestStartedAt']);
+            $nexusRawData->setRequestStartedAt(requestStartedAt: $requestStartedAt);
         }
         if (array_key_exists(key: 'responseCompletedAt', array: $data)) {
-            $responseCompletedAt = new DateTimeImmutable($data['responseCompletedAt']);
-            $nexusRawData->setResponseCompletedAt($responseCompletedAt);
+            $responseCompletedAt = new DateTimeImmutable(datetime: $data['responseCompletedAt']);
+            $nexusRawData->setResponseCompletedAt(responseCompletedAt: $responseCompletedAt);
         }
         if (array_key_exists(key: 'method', array: $data)) {
-            $nexusRawData->setMethod($data['method']);
+            $nexusRawData->setMethod(method: $data['method']);
         }
         if (array_key_exists(key: 'url', array: $data)) {
-            $nexusRawData->setUrl($data['url']);
+            $nexusRawData->setUrl(url: $data['url']);
         }
         if (array_key_exists(key: 'formData', array: $data)) {
-            $nexusRawData->setFormData($data['formData']);
+            $nexusRawData->setFormData(formData: $data['formData']);
         }
         if (array_key_exists(key: 'responseBody', array: $data)) {
-            $nexusRawData->setResponseBody($data['responseBody']);
+            $nexusRawData->setResponseBody(responseBody: $data['responseBody']);
         }
 
         return $nexusRawData;

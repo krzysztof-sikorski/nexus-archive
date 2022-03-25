@@ -20,6 +20,8 @@ final class UserManager
     }
 
     /**
+     * @param string $username
+     * @param string $plaintextPassword
      * @param string[] $roles
      * @return User
      */
@@ -31,14 +33,14 @@ final class UserManager
         $uuid = Uuid::v4();
         $createdAt = $this->clock->getCurrentDateTime();
 
-        $user = new User($uuid);
-        $user->setCreatedAt($createdAt);
-        $user->setUsername($username);
-        $user->setRoles($roles);
-        $user->setEnabled(true);
+        $user = new User(id: $uuid);
+        $user->setCreatedAt(createdAt: $createdAt);
+        $user->setUsername(username: $username);
+        $user->setRoles(roles: $roles);
+        $user->setEnabled(enabled: true);
 
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $plaintextPassword);
-        $user->setPassword($hashedPassword);
+        $hashedPassword = $this->passwordHasher->hashPassword(user: $user, plainPassword: $plaintextPassword);
+        $user->setPassword(password: $hashedPassword);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

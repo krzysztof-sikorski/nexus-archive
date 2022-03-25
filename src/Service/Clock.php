@@ -12,7 +12,7 @@ final class Clock implements ClockInterface
 {
     public function getCurrentDateTime(): DateTimeImmutable
     {
-        $timezone = new DateTimeZone('UTC');
-        return new DateTimeImmutable('now', $timezone);
+        $timezone = new DateTimeZone(timezone: 'UTC');
+        return new DateTimeImmutable(datetime: 'now', timezone: $timezone);
     }
 }

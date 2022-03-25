@@ -28,13 +28,13 @@ final class UserAccessTokenManager
     {
         $uuid = Uuid::v4();
         $createdAt = $this->clock->getCurrentDateTime();
-        $validUntil = $createdAt->add($duration);
+        $validUntil = $createdAt->add(interval: $duration);
 
-        $token = new UserAccessToken($uuid);
-        $token->setOwner($owner);
-        $token->setValue($this->generateValue());
-        $token->setCreatedAt($createdAt);
-        $token->setValidUntil($validUntil);
+        $token = new UserAccessToken(id: $uuid);
+        $token->setOwner(owner: $owner);
+        $token->setValue(value: $this->generateValue());
+        $token->setCreatedAt(createdAt: $createdAt);
+        $token->setValidUntil(validUntil: $validUntil);
 
         $this->entityManager->persist($token);
         $this->entityManager->flush();
@@ -45,7 +45,7 @@ final class UserAccessTokenManager
     public function prune(): void
     {
         $dql = 'DELETE FROM App:UserAccessToken AS t WHERE t.validUntil < current_timestamp()';
-        $query = $this->entityManager->createQuery($dql);
+        $query = $this->entityManager->createQuery(dql: $dql);
         $query->execute();
     }
 

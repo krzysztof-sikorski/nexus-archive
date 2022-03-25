@@ -25,9 +25,9 @@ final class NexusRawDataManager
     ): NexusRawDataSubmissionResult {
         $submittedAt = $this->clock->getCurrentDateTime();
 
-        $nexusRawData = $this->nexusRawDataFactory->createFromJsonDataSubmission($decodedJsonData);
+        $nexusRawData = $this->nexusRawDataFactory->createFromJsonDataSubmission(decodedJsonData: $decodedJsonData);
 
-        $userAccessToken = $this->userAccessTokenRepository->findByValue($userAccessTokenValue);
+        $userAccessToken = $this->userAccessTokenRepository->findByValue(value: $userAccessTokenValue);
         if (null === $userAccessToken) {
             $errors = [
                 sprintf('Invalid access token value: %s', $userAccessTokenValue),
@@ -41,8 +41,8 @@ final class NexusRawDataManager
 
         $submitter = $userAccessToken->getOwner();
 
-        $nexusRawData->setSubmittedAt($submittedAt);
-        $nexusRawData->setSubmitter($submitter);
+        $nexusRawData->setSubmittedAt(submittedAt: $submittedAt);
+        $nexusRawData->setSubmitter(submitter: $submitter);
 
         $this->entityManager->persist($nexusRawData);
         $this->entityManager->flush();
