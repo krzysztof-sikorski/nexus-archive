@@ -10,12 +10,10 @@ use App\Repository\UserRepository;
 use App\Service\UserManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\SerializerInterface;
 
 use function sprintf;
@@ -24,7 +22,7 @@ use function sprintf;
     name: 'app:user:create',
     description: 'Creates a new user',
 )]
-final class UserCreateCommand extends Command
+final class UserCreateCommand extends BaseCommand
 {
     private const ARGUMENT_NAME_USERNAME = 'username';
     private const ARGUMENT_NAME_ROLE = 'role';
@@ -36,112 +34,113 @@ final class UserCreateCommand extends Command
     public function __construct(
         private UserRepository $userRepository,
         private UserManager $userManager,
-        private SerializerInterface $serializer,
+        SerializerInterface $serializer,
     ) {
-        parent::__construct();
+        parent::__construct(serializer: $serializer);
     }
 
     protected function configure(): void
     {
         $this->addOption(
-            self::ARGUMENT_NAME_USERNAME,
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Username',
-            null
+            name: self::ARGUMENT_NAME_USERNAME,
+            shortcut: null,
+            mode: InputOption::VALUE_REQUIRED,
+            description: 'Username',
+            default: null
         );
         $this->addOption(
-            self::ARGUMENT_NAME_ROLE,
-            null,
-            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-            sprintf('Additional roles (%s is always given)', User::DEFAULT_ROLE),
-            []
+            name: self::ARGUMENT_NAME_ROLE,
+            shortcut: null,
+            mode: InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            description: sprintf('Additional roles (%s is always given)', User::DEFAULT_ROLE),
+            default: []
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = $this->createSymfonyStyle(input: $input, output: $output);
 
-        $this->username = $input->getOption(self::ARGUMENT_NAME_USERNAME);
+        $this->username = $input->getOption(name: self::ARGUMENT_NAME_USERNAME);
 
         while (true) {
             if (null === $this->username) {
-                $this->askForUsername($input, $output);
+                $this->askForUsername(input: $input, output: $output);
             }
-            if (null !== $this->userRepository->findByUsername($this->username)) {
-                $io->error(sprintf('User with username=%s already exists!', $this->username));
+            if (null !== $this->userRepository->findByUsername(username: $this->username)) {
+                $io->error(message: sprintf('User with username=%s already exists!', $this->username));
                 $this->username = null;
             } else {
                 break;
             }
         }
 
-        $this->askForPassword($input, $output);
+        $this->askForPassword(input: $input, output: $output);
 
-        $this->roles = $input->getOption(self::ARGUMENT_NAME_ROLE);
-        $this->addRole(User::DEFAULT_ROLE);
-        $this->askForAdditionalRoles($input, $output);
+        $this->roles = $input->getOption(name: self::ARGUMENT_NAME_ROLE);
+        $this->addRole(role: User::DEFAULT_ROLE);
+        $this->askForAdditionalRoles(input: $input, output: $output);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = $this->createSymfonyStyle(input: $input, output: $output);
 
-        $io->info(sprintf('Selected username: %s', $this->serializer->serialize($this->username, 'json')));
-        $io->info(sprintf('Selected password: %s', $this->serializer->serialize($this->plaintextPassword, 'json')));
-        $io->info(sprintf('Selected roles: %s', $this->serializer->serialize($this->roles, 'json')));
+        $this->displayValue(io: $io, label: 'Selected username', value: $this->username);
+        $this->displayValue(io: $io, label: 'Selected password', value: $this->plaintextPassword);
+        $this->displayValue(io: $io, label: 'Selected roles', value: $this->roles);
 
-        $user = $this->userManager->create($this->username, $this->plaintextPassword, $this->roles);
+        $user = $this->userManager->create(
+            username: $this->username,
+            plaintextPassword: $this->plaintextPassword,
+            roles: $this->roles
+        );
 
-        $io->info(sprintf('Created user: %s', $this->serializer->serialize($user, 'json')));
+        $this->displayValue(io: $io, label: 'Created user', value: $user);
 
         return Command::SUCCESS;
     }
 
     private function askForUsername(InputInterface $input, OutputInterface $output): void
     {
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
-        $question = new Question('Username?');
+        $helper = $this->getQuestionHelper();
+        $question = new Question(question: 'Username?');
         do {
-            $this->username = $helper->ask($input, $output, $question);
+            $this->username = $helper->ask(input: $input, output: $output, question: $question);
         } while (null === $this->username);
     }
 
     private function askForPassword(InputInterface $input, OutputInterface $output): void
     {
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
-        $question = new Question('Password?');
+        $helper = $this->getQuestionHelper();
+        $question = new Question(question: 'Password?');
         do {
-            $this->plaintextPassword = $helper->ask($input, $output, $question);
+            $this->plaintextPassword = $helper->ask(input: $input, output: $output, question: $question);
         } while (null === $this->plaintextPassword);
     }
 
     private function addRole(string $role): void
     {
         $this->roles[] = $role;
-        $this->roles = UserRoles::normalize($this->roles);
+        $this->roles = UserRoles::normalize(roles: $this->roles);
     }
 
     private function askForAdditionalRoles(InputInterface $input, OutputInterface $output): void
     {
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
-        $question = new Question('Additional role? (empty to finish adding)');
+        $helper = $this->getQuestionHelper();
+        $question = new Question(question: 'Additional role? (empty to finish adding)');
 
-        $io = new SymfonyStyle($input, $output);
+        $io = $this->createSymfonyStyle(input: $input, output: $output);
         while (true) {
-            $io->info(sprintf('Selected roles: %s', $this->serializer->serialize($this->roles, 'json')));
-            $role = $helper->ask($input, $output, $question);
+            $this->displayValue(io: $io, label: 'Selected roles', value: $this->roles);
+            $role = $helper->ask(input: $input, output: $output, question: $question);
             if (null === $role) {
                 break;
             }
-            if (UserRoles::isValidRole($role)) {
-                $this->addRole($role);
+            if (UserRoles::isValidRole(role: $role)) {
+                $this->addRole(role: $role);
             } else {
-                $io->error(sprintf('Invalid role name: %s', $role));
+                $io->error(message: sprintf('Invalid role name: %s', $role));
             }
         }
     }

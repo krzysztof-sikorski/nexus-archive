@@ -11,12 +11,10 @@ use DateInterval;
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\SerializerInterface;
 
 use function sprintf;
@@ -25,7 +23,7 @@ use function sprintf;
     name: 'app:user:create-access-token',
     description: 'Creates a new user access token',
 )]
-final class UserCreateAccessTokenCommand extends Command
+final class UserCreateAccessTokenCommand extends BaseCommand
 {
     private const ARGUMENT_NAME_OWNER = 'owner';
     private const ARGUMENT_NAME_DURATION = 'duration';
@@ -38,64 +36,61 @@ final class UserCreateAccessTokenCommand extends Command
     public function __construct(
         private UserRepository $userRepository,
         private UserAccessTokenManager $userAccessTokenManager,
-        private SerializerInterface $serializer,
+        SerializerInterface $serializer,
     ) {
-        parent::__construct();
+        parent::__construct(serializer: $serializer);
     }
 
     protected function configure(): void
     {
         $this->addOption(
-            self::ARGUMENT_NAME_OWNER,
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Owner\'s username',
-            null
+            name: self::ARGUMENT_NAME_OWNER,
+            shortcut: null,
+            mode: InputOption::VALUE_REQUIRED,
+            description: 'Owner\'s username',
+            default: null
         );
 
         $this->addOption(
-            self::ARGUMENT_NAME_DURATION,
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Token duration (how long it is valid)',
-            self::DEFAULT_DURATION
+            name: self::ARGUMENT_NAME_DURATION,
+            shortcut: null,
+            mode: InputOption::VALUE_REQUIRED,
+            description: 'Token duration (how long it is valid)',
+            default: self::DEFAULT_DURATION
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = $this->createSymfonyStyle(input: $input, output: $output);
 
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
-        $question = new Question('Owner\'s username?', null);
+        $helper = $this->getQuestionHelper();
+        $question = new Question(question: 'Owner\'s username?', default: null);
 
-        $ownerUsername = $input->getOption(self::ARGUMENT_NAME_OWNER);
+        $ownerUsername = $input->getOption(name: self::ARGUMENT_NAME_OWNER);
         while (true) {
             while (null === $ownerUsername) {
-                $ownerUsername = $helper->ask($input, $output, $question);
+                $ownerUsername = $helper->ask(input: $input, output: $output, question: $question);
             }
-            $this->owner = $this->userRepository->findByUsername($ownerUsername);
+            $this->owner = $this->userRepository->findByUsername(username: $ownerUsername);
             if (null !== $this->owner) {
                 break;
             } else {
-                $io->error(sprintf('User with username=%s does not exist!', $ownerUsername));
+                $io->error(message: sprintf('User with username=%s does not exist!', $ownerUsername));
                 $ownerUsername = null;
             }
         }
 
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
         $questionText = sprintf('Token duration (default: %s)?', self::DEFAULT_DURATION);
-        $question = new Question($questionText, self::DEFAULT_DURATION);
+        $question = new Question(question: $questionText, default: self::DEFAULT_DURATION);
 
-        $this->durationStr = $input->getOption(self::ARGUMENT_NAME_DURATION);
+        $this->durationStr = $input->getOption(name: self::ARGUMENT_NAME_DURATION);
         while (true) {
             if (null === $this->durationStr) {
-                $this->durationStr = $helper->ask($input, $output, $question);
+                $this->durationStr = $helper->ask(input: $input, output: $output, question: $question);
             }
             try {
-                $duration = DateInterval::createFromDateString($this->durationStr);
+                $duration = DateInterval::createFromDateString(datetime: $this->durationStr);
             } catch (Exception $e) {
                 $duration = null;
             }
@@ -103,33 +98,24 @@ final class UserCreateAccessTokenCommand extends Command
                 $this->duration = $duration;
                 break;
             } else {
-                $io->error(sprintf('Invalid duration: %s', $this->durationStr));
+                $io->error(message: sprintf('Invalid duration: %s', $this->durationStr));
             }
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = $this->createSymfonyStyle(input: $input, output: $output);
 
-        $io->info(
-            sprintf(
-                'Selected owner: %s',
-                $this->serializer->serialize($this->owner, 'json')
-            )
-        );
+        $this->displayValue(io: $io, label: 'Selected owner', value: $this->owner);
 
-        $io->info(
-            sprintf(
-                'Selected duration: %s (parsed as: %s)',
-                $this->durationStr,
-                $this->serializer->serialize($this->duration, 'json')
-            )
-        );
+        $parsedDuration = $this->serializer->serialize($this->duration, 'json');
+        $message = sprintf('Selected duration: %s (parsed as: %s)', $this->durationStr, $parsedDuration);
+        $io->info(message: $message);
 
-        $token = $this->userAccessTokenManager->create($this->owner, $this->duration);
+        $token = $this->userAccessTokenManager->create(owner: $this->owner, duration: $this->duration);
 
-        $io->info(sprintf('Created token: %s', $this->serializer->serialize($token, 'json')));
+        $this->displayValue(io: $io, label: 'Created token', value: $token);
 
         return Command::SUCCESS;
     }
