@@ -5,6 +5,11 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
+imports:
+    # For some reason Symfony 6 does not automatically import config files
+    # if they are in PHP format, so we have to do it manually.
+    - { resource: 'packages/**/*.php' }
+
 services:
     # default configuration for services in *this* file
     _defaults:
