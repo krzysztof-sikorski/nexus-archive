@@ -3,30 +3,23 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\FrameworkConfig;
 
-return static function (ContainerConfigurator $containerConfigurator) {
-    $config = [
-        'secret' => '%env(APP_SECRET)%',
-        'http_method_override' => false,
-        'session' => [
-            'handler_id' => null,
-            'cookie_secure' => 'auto',
-            'cookie_samesite' => 'lax',
-            'storage_factory_id' => 'session.storage.factory.native',
-        ],
-        'php_errors' => [
-            'log' => true,
-        ],
-    ];
-    $containerConfigurator->extension(namespace: 'framework', config: $config);
+return static function (FrameworkConfig $frameworkConfig, ContainerConfigurator $containerConfigurator) {
+    $frameworkConfig->secret(value: '%env(APP_SECRET)%');
+    $frameworkConfig->httpMethodOverride(value: false);
+
+    $sessionConfig = $frameworkConfig->session();
+    $sessionConfig->storageFactoryId(value: 'session.storage.factory.native');
+    $sessionConfig->handlerId(value: null);
+    $sessionConfig->cookieSecure(value: 'auto');
+    $sessionConfig->cookieSamesite(value: 'lax');
+
+    $phpErrorsConfig = $frameworkConfig->phpErrors();
+    $phpErrorsConfig->log(value: true);
 
     if ('test' === $containerConfigurator->env()) {
-        $config = [
-            'test' => true,
-            'session' => [
-                'storage_factory_id' => 'session.storage.factory.mock_file',
-            ],
-        ];
-        $containerConfigurator->extension(namespace: 'framework', config: $config);
+        $frameworkConfig->test(value: true);
+        $sessionConfig->storageFactoryId(value: 'session.storage.factory.mock_file');
     }
 };

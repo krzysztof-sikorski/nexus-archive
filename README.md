@@ -38,6 +38,12 @@ sudo apt-get install php-xml php-mbstring php-intl php-xml # required or recomme
 sudo apt-get install php-pgsql # required by application design
 ```
 
+## Development notes
+
+- some classes are loaded from `var\cache` directory, so you have to
+  execute `bin/console cache:warmup` to have them available for IDE
+  autocompletion
+
 [EUPL]:
 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 

@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\FrameworkConfig;
 
-return static function (ContainerConfigurator $containerConfigurator) {
-    $config = [
-        'default_locale' => 'en',
-        'translator' => [
-            'default_path' => '%kernel.project_dir%/translations',
-            'fallbacks' => ['en'],
-        ],
-    ];
-    $containerConfigurator->extension(namespace: 'framework', config: $config);
+return static function (FrameworkConfig $frameworkConfig) {
+    $frameworkConfig->defaultLocale('en');
+
+    $translatorConfig = $frameworkConfig->translator();
+    $translatorConfig->defaultPath(value: '%kernel.project_dir%/translations');
+    $translatorConfig->fallbacks(['en']);
 };

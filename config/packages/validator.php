@@ -3,33 +3,13 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\FrameworkConfig;
 
-return static function (ContainerConfigurator $containerConfigurator) {
-    $config = [
-        'validation' => [
-            'email_validation_mode' => 'html5',
-        ],
-    ];
-    $containerConfigurator->extension(namespace: 'framework', config: $config);
+return static function (FrameworkConfig $frameworkConfig, ContainerConfigurator $containerConfigurator) {
+    $validationConfig = $frameworkConfig->validation();
+    $validationConfig->emailValidationMode(value: 'html5');
 
     if ('test' === $containerConfigurator->env()) {
-        $config = [
-            'validation' => [
-                'not_compromised_password' => false,
-            ],
-        ];
-        $containerConfigurator->extension(namespace: 'framework', config: $config);
+        $validationConfig->notCompromisedPassword()->enabled(value: false);
     }
 };
-
-
-/*
-framework:
-    validation:
-        email_validation_mode: html5
-
-        # Enables validator auto-mapping support.
-        # For instance, basic validation constraints will be inferred from Doctrine's metadata.
-        #auto_mapping:
-        #    App\Entity\: []
-*/

@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\FrameworkConfig;
 
-return static function (ContainerConfigurator $containerConfigurator) {
-    $config = [
-        'lock' => '%env(LOCK_DSN)%',
-    ];
-    $containerConfigurator->extension(namespace: 'framework', config: $config);
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
+
+return static function (FrameworkConfig $frameworkConfig) {
+    $lockConfig = $frameworkConfig->lock();
+    $lockConfig->enabled(value: true);
+    $lockConfig->resource(name: 'default', value: env(name: 'LOCK_DSN'));
 };

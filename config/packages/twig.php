@@ -3,17 +3,12 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\TwigConfig;
 
-return static function (ContainerConfigurator $containerConfigurator) {
-    $config = [
-        'default_path' => '%kernel.project_dir%/templates',
-    ];
-    $containerConfigurator->extension(namespace: 'twig', config: $config);
+return static function (TwigConfig $twigConfig, ContainerConfigurator $containerConfigurator) {
+    $twigConfig->defaultPath(value: '%kernel.project_dir%/templates');
 
     if ('test' === $containerConfigurator->env()) {
-        $config = [
-            'strict_variables' => true,
-        ];
-        $containerConfigurator->extension(namespace: 'twig', config: $config);
+        $twigConfig->strictVariables(value: true);
     }
 };

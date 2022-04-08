@@ -6,9 +6,17 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator) {
     $containerConfigurator->import(
-        resource: 'packages/*.php',
+        resource: __DIR__ . '/packages/*.php',
         type: 'glob',
     );
+
+    $envConfigDir = __DIR__ . '/packages/' . $containerConfigurator->env();
+    if (is_dir($envConfigDir)) {
+        $containerConfigurator->import(
+            resource: $envConfigDir . '/*.php',
+            type: 'glob',
+        );
+    }
 
     $servicesConfigurator = $containerConfigurator->services();
 

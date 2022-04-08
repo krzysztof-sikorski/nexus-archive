@@ -3,21 +3,13 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\FrameworkConfig;
 
-return static function (ContainerConfigurator $containerConfigurator) {
-    $config = [
-        'router' => [
-            'utf8' => true,
-        ],
-    ];
-    $containerConfigurator->extension(namespace: 'framework', config: $config);
+return static function (FrameworkConfig $frameworkConfig, ContainerConfigurator $containerConfigurator) {
+    $routerConfig = $frameworkConfig->router();
+    $routerConfig->utf8(value: true);
 
     if ('prod' === $containerConfigurator->env()) {
-        $config = [
-            'router' => [
-                'strict_requirements' => null,
-            ],
-        ];
-        $containerConfigurator->extension(namespace: 'framework', config: $config);
+        $routerConfig->strictRequirements(value: null);
     }
 };
