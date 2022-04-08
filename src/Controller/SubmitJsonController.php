@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Contract\Config\AppRoutes;
 use App\DTO\NexusRawDataSubmissionResult;
 use App\Service\NexusRawDataManager;
 use App\Service\NexusRawDataValidator;
@@ -27,7 +28,7 @@ final class SubmitJsonController
     ) {
     }
 
-    #[Route(path: '/submit-json', name: 'app_submit_json', methods: [Request::METHOD_GET, Request::METHOD_POST])]
+    #[Route(path: '/submit-json', name: AppRoutes::SUBMIT_JSON, methods: [Request::METHOD_GET, Request::METHOD_POST])]
     public function json(
         Request $request
     ): Response {

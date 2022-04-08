@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Contract\Config\AppRoutes;
 use App\Entity\NexusRawData;
 use App\Entity\User;
 use App\Entity\UserAccessToken;
@@ -31,7 +32,7 @@ final class DashboardController extends AbstractDashboardController
     ) {
     }
 
-    #[Route('/admin', name: 'admin')]
+    #[Route('/admin', name: AppRoutes::ADMIN)]
     public function index(): Response
     {
         $userTotalCount = $this->userRepository->getTotalCount();

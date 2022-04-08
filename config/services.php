@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
+use App\Contract\Config\AppParameters;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator) {
     $containerConfigurator->import(
         resource: __DIR__ . '/packages/*.php',
-        type: 'glob',
+        type: AppParameters::CONFIGURATOR_IMPORT_TYPE_GLOB,
     );
 
     $envConfigDir = __DIR__ . '/packages/' . $containerConfigurator->env();
     if (is_dir($envConfigDir)) {
         $containerConfigurator->import(
             resource: $envConfigDir . '/*.php',
-            type: 'glob',
+            type: AppParameters::CONFIGURATOR_IMPORT_TYPE_GLOB,
         );
     }
 

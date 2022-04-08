@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Contract\Config\AppParameters;
+use App\Contract\Config\AppRoutes;
 use App\Contract\UserRoles;
 use App\Entity\User;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9,12 +11,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Config\SecurityConfig;
 
 return static function (SecurityConfig $securityConfig, ContainerConfigurator $containerConfigurator) {
-    $userProviderName = 'app_user_provider';
-    $userEntityLookupProperty = 'username';
-    $routeKeyHome = 'app_home';
-    $routeKeyLogin = 'app_login';
-    $routeKeyLogout = 'app_logout';
-
     $securityConfig->enableAuthenticatorManager(value: true);
 
     $authPasswordHasherConfig = $securityConfig->passwordHasher(class: PasswordAuthenticatedUserInterface::class);
@@ -25,9 +21,9 @@ return static function (SecurityConfig $securityConfig, ContainerConfigurator $c
 
     $securityConfig->passwordHasher(class: User::class)->algorithm(value: 'auto');
 
-    $entityConfig = $securityConfig->provider(name: $userProviderName)->entity();
+    $entityConfig = $securityConfig->provider(name: AppParameters::SECURITY_USER_PROVIDER_NAME)->entity();
     $entityConfig->class(User::class);
-    $entityConfig->property(value: $userEntityLookupProperty);
+    $entityConfig->property(value: AppParameters::SECURITY_USER_ENTITY_ID_FIELD);
 
     $firewallConfig = $securityConfig->firewall(name: 'dev');
     $firewallConfig->pattern(value: '^/(_(profiler|wdt)|css|images|js)/');
@@ -35,18 +31,18 @@ return static function (SecurityConfig $securityConfig, ContainerConfigurator $c
 
     $firewallConfig = $securityConfig->firewall(name: 'main');
     $firewallConfig->lazy(value: true);
-    $firewallConfig->provider(value: $userProviderName);
+    $firewallConfig->provider(value: AppParameters::SECURITY_USER_PROVIDER_NAME);
 
     $formLoginConfig = $firewallConfig->formLogin();
-    $formLoginConfig->loginPath(value: $routeKeyLogin);
-    $formLoginConfig->checkPath(value: $routeKeyLogin);
+    $formLoginConfig->loginPath(value: AppRoutes::LOGIN);
+    $formLoginConfig->checkPath(value: AppRoutes::LOGIN);
     $formLoginConfig->enableCsrf(value: true);
-    $formLoginConfig->defaultTargetPath(value: $routeKeyHome);
+    $formLoginConfig->defaultTargetPath(value: AppRoutes::HOME);
     $formLoginConfig->alwaysUseDefaultTargetPath(value: true);
 
     $firewallConfig->loginThrottling(); // enable with default values
 
-    $firewallConfig->logout()->path(value: $routeKeyLogout);
+    $firewallConfig->logout()->path(value: AppRoutes::LOGOUT);
 
     $accessControlConfig = $securityConfig->accessControl();
     $accessControlConfig->path(value: '^/admin');

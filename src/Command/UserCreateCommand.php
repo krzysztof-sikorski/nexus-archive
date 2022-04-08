@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Contract\Config\AppParameters;
 use App\Contract\UserRoles;
-use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\UserManager;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -52,7 +52,7 @@ final class UserCreateCommand extends BaseCommand
             name: self::ARGUMENT_NAME_ROLE,
             shortcut: null,
             mode: InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-            description: sprintf('Additional roles (%s is always given)', User::DEFAULT_ROLE),
+            description: sprintf('Additional roles (%s is always given)', AppParameters::SECURITY_DEFAULT_ROLE),
             default: []
         );
     }
@@ -78,7 +78,7 @@ final class UserCreateCommand extends BaseCommand
         $this->askForPassword(input: $input, output: $output);
 
         $this->roles = $input->getOption(name: self::ARGUMENT_NAME_ROLE);
-        $this->addRole(role: User::DEFAULT_ROLE);
+        $this->addRole(role: AppParameters::SECURITY_DEFAULT_ROLE);
         $this->askForAdditionalRoles(input: $input, output: $output);
     }
 

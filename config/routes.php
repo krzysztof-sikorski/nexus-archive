@@ -2,21 +2,23 @@
 
 declare(strict_types=1);
 
+use App\Contract\Config\AppParameters;
+use App\Contract\Config\AppRoutes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return static function (RoutingConfigurator $routingConfigurator) {
     $routingConfigurator->import(
         resource: __DIR__ . '/../src/Controller/',
-        type: 'annotation',
+        type: AppParameters::CONFIGURATOR_IMPORT_TYPE_ANNOTATION,
     );
 
     $routingConfigurator->import(
         resource: __DIR__ . '/../src/Kernel.php',
-        type: 'annotation',
+        type: AppParameters::CONFIGURATOR_IMPORT_TYPE_ANNOTATION,
     );
 
-    $routeConfigurator = $routingConfigurator->add(name: 'app_logout', path: '/logout');
+    $routeConfigurator = $routingConfigurator->add(name: AppRoutes::LOGOUT, path: '/logout');
     $methods = [
         Request::METHOD_GET,
         Request::METHOD_POST,

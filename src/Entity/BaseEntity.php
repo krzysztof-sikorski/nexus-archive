@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\Config\AppParameters;
 use App\Contract\Entity\BaseEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -12,7 +13,7 @@ abstract class BaseEntity implements BaseEntityInterface
 {
     #[
         ORM\Id,
-        ORM\Column(name: 'id', type: 'uuid'),
+        ORM\Column(name: 'id', type: AppParameters::DOCTRINE_COLUMN_TYPE_UUID),
     ]
     protected Uuid $id;
 

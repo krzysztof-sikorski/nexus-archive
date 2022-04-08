@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\Config\AppParameters;
 use App\Contract\Entity\BaseEntityInterface;
-use App\Contract\UserRoles;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -18,13 +18,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[
     ORM\Entity(repositoryClass: UserRepository::class),
     ORM\Table(name: '"user"'),
-    ORM\UniqueConstraint(name: 'username_uniq', fields: ['username']),
+    ORM\UniqueConstraint(name: 'username_uniq', fields: [AppParameters::SECURITY_USER_ENTITY_ID_FIELD]),
 ]
 class User extends BaseEntity
     implements BaseEntityInterface, UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
-    public const DEFAULT_ROLE = UserRoles::ROLE_USER;
-
     public const USERNAME_MAX_LENGTH = 180;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
@@ -88,8 +86,8 @@ class User extends BaseEntity
         $roles = $this->roles;
 
         // guarantee every user at least has default role
-        if (false === in_array(needle: self::DEFAULT_ROLE, haystack: $roles, strict: true)) {
-            $roles[] = self::DEFAULT_ROLE;
+        if (false === in_array(needle: AppParameters::SECURITY_DEFAULT_ROLE, haystack: $roles, strict: true)) {
+            $roles[] = AppParameters::SECURITY_DEFAULT_ROLE;
         }
 
         return $roles;

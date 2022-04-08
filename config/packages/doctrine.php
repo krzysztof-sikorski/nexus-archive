@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Contract\Config\AppParameters;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Config\DoctrineConfig;
 use Symfony\Config\FrameworkConfig;
@@ -13,20 +14,16 @@ return static function (
     FrameworkConfig $frameworkConfig,
     ContainerConfigurator $containerConfigurator
 ) {
-    $defaultConnectionName = 'default';
-    $cachePoolNameDoctrineSystemCache = 'doctrine.system_cache_pool';
-    $cachePoolNameDoctrineResultCache = 'doctrine.result_cache_pool';
-
     $dbalConfig = $doctrineConfig->dbal();
-    $dbalConfig->defaultConnection(value: $defaultConnectionName);
+    $dbalConfig->defaultConnection(value: AppParameters::DOCTRINE_DEFAULT_CONNECTION_NAME);
 
-    $defaultConnectionConfig = $dbalConfig->connection(name: $defaultConnectionName);
+    $defaultConnectionConfig = $dbalConfig->connection(name: AppParameters::DOCTRINE_DEFAULT_CONNECTION_NAME);
     $defaultConnectionConfig->url(value: env(name: 'DATABASE_URL')->resolve());
 
     $ormConfig = $doctrineConfig->orm();
     $ormConfig->autoGenerateProxyClasses(value: true);
 
-    $entityManagerConfig = $ormConfig->entityManager(name: $defaultConnectionName);
+    $entityManagerConfig = $ormConfig->entityManager(name: AppParameters::DOCTRINE_DEFAULT_CONNECTION_NAME);
     $entityManagerConfig->namingStrategy(value: 'doctrine.orm.naming_strategy.underscore_number_aware');
     $entityManagerConfig->autoMapping(value: true);
 
@@ -41,15 +38,15 @@ return static function (
 
         $queryCacheDriverConfig = $entityManagerConfig->queryCacheDriver();
         $queryCacheDriverConfig->type(value: 'pool');
-        $queryCacheDriverConfig->pool($cachePoolNameDoctrineSystemCache);
+        $queryCacheDriverConfig->pool(AppParameters::CACHE_POOL_NAME_DOCTRINE_QUERY_CACHE);
 
         $resultCacheDriverConfig = $entityManagerConfig->resultCacheDriver();
         $resultCacheDriverConfig->type(value: 'pool');
-        $resultCacheDriverConfig->pool($cachePoolNameDoctrineResultCache);
+        $resultCacheDriverConfig->pool(AppParameters::CACHE_POOL_NAME_DOCTRINE_RESULT_CACHE);
 
         $cacheConfig = $frameworkConfig->cache();
-        $cacheConfig->pool(name: $cachePoolNameDoctrineResultCache)->adapters(['cache.app']);
-        $cacheConfig->pool(name: $cachePoolNameDoctrineSystemCache)->adapters(['cache.system']);
+        $cacheConfig->pool(name: AppParameters::CACHE_POOL_NAME_DOCTRINE_QUERY_CACHE)->adapters(['cache.system']);
+        $cacheConfig->pool(name: AppParameters::CACHE_POOL_NAME_DOCTRINE_RESULT_CACHE)->adapters(['cache.app']);
     }
 
     if ('test' === $containerConfigurator->env()) {

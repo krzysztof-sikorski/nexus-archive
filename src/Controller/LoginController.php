@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Contract\Config\AppRoutes;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -15,7 +16,7 @@ final class LoginController
     {
     }
 
-    #[Route('/login', name: 'app_login')]
+    #[Route('/login', name: AppRoutes::LOGIN)]
     public function index(
         AuthenticationUtils $authenticationUtils
     ): Response {
