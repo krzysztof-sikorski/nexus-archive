@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Config\MonologConfig;
 
 return static function (MonologConfig $monologConfig, ContainerConfigurator $containerConfigurator) {
-    if ('dev' === $containerConfigurator->env()) {
-        // As of Symfony 5.1, deprecations are logged in the dedicated "deprecation" channel when it exists
-        $monologConfig->channels(value: ['deprecation']);
+    // As of Symfony 5.1, deprecations are logged in the dedicated "deprecation" channel when it exists
+    $monologConfig->channels(value: ['deprecation']);
 
+    if ('dev' === $containerConfigurator->env()) {
         $deprecationHandlerConfig = $monologConfig->handler(name: 'deprecation');
         $deprecationHandlerConfig->type(value: 'stream');
         $deprecationHandlerConfig->path(value: '%kernel.logs_dir%/%kernel.environment%.deprecation.log');
