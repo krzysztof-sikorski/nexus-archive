@@ -1,3 +1,13 @@
+# Version 0.5.0
+
+- fix crash in token command on empty username input
+- create basic admin panel
+- convert all config files to PHP format
+- general code cleanup and refactoring
+- update installed dependencies to newer versions
+- update Symfony recipes metadata, port changes to appropriate files
+- start using Doctrine Migrations: create initial migration for existing tables
+
 # Version 0.4.0
 
 - remove unnecessary properties from NexusRawData
