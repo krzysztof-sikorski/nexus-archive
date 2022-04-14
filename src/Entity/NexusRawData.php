@@ -15,14 +15,11 @@ use JsonSerializable;
 #[
     ORM\Entity(repositoryClass: NexusRawDataRepository::class),
     ORM\Table(name: 'nexus_raw_data'),
-    ORM\Index(columns: ['submitted_at', 'request_started_at', 'id'], name: 'nexus_raw_data_sorting_idx'),
+    ORM\Index(columns: ['created_at', 'request_started_at', 'id'], name: 'nexus_raw_data_sorting_idx'),
     ORM\Index(columns: ['submitter_id'], name: 'nexus_raw_data_submitter_idx'),
 ]
 class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerializable
 {
-    #[ORM\Column(name: 'submitted_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
-    private ?DateTimeImmutable $submittedAt = null;
-
     #[
         ORM\ManyToOne(targetEntity: User::class),
         ORM\JoinColumn(name: 'submitter_id', referencedColumnName: 'id', nullable: false),
@@ -51,7 +48,7 @@ class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerial
     {
         return [
             'id' => $this->getId(),
-            'submittedAt' => $this->getSubmittedAt()?->format(DateTimeInterface::ISO8601),
+            'submittedAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
             'submitterId' => $this->getSubmitter()?->getId(),
             'requestStartedAt' => $this->getRequestStartedAt()?->format(DateTimeInterface::ISO8601),
             'responseCompletedAt' => $this->getResponseCompletedAt()?->format(DateTimeInterface::ISO8601),
@@ -60,16 +57,6 @@ class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerial
             'formData' => $this->getFormData(),
             'responseBody' => $this->getResponseBody(),
         ];
-    }
-
-    public function getSubmittedAt(): ?DateTimeImmutable
-    {
-        return $this->submittedAt;
-    }
-
-    public function setSubmittedAt(?DateTimeImmutable $submittedAt): void
-    {
-        $this->submittedAt = $submittedAt;
     }
 
     public function getSubmitter(): ?User

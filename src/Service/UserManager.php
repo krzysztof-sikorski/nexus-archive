@@ -35,6 +35,7 @@ final class UserManager
 
         $user = new User(id: $uuid);
         $user->setCreatedAt(createdAt: $createdAt);
+        $user->setLastModifiedAt(lastModifiedAt: $createdAt);
         $user->setUsername(username: $username);
         $user->setRoles(roles: $roles);
         $user->setEnabled(enabled: true);

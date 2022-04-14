@@ -34,6 +34,7 @@ final class UserAccessTokenManager
         $token->setOwner(owner: $owner);
         $token->setValue(value: $this->generateValue());
         $token->setCreatedAt(createdAt: $createdAt);
+        $token->setLastModifiedAt(lastModifiedAt: $createdAt);
         $token->setValidUntil(validUntil: $validUntil);
 
         $this->entityManager->persist($token);

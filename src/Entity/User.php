@@ -7,7 +7,6 @@ namespace App\Entity;
 use App\Contract\Config\AppParameters;
 use App\Contract\Entity\BaseEntityInterface;
 use App\Repository\UserRepository;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,9 +24,6 @@ class User extends BaseEntity
 {
     public const USERNAME_MAX_LENGTH = 180;
 
-    #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
-    private ?DateTimeImmutable $createdAt = null;
-
     #[ORM\Column(name: 'username', type: Types::STRING, length: self::USERNAME_MAX_LENGTH, nullable: false)]
     private ?string $username = null;
 
@@ -43,16 +39,6 @@ class User extends BaseEntity
     public function __toString(): string
     {
         return $this->getUserIdentifier();
-    }
-
-    public function getCreatedAt(): ?DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
     }
 
     /**

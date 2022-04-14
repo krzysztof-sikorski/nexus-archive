@@ -22,9 +22,6 @@ class UserAccessToken extends BaseEntity implements BaseEntityInterface, JsonSer
     #[ORM\Column(name: 'value', type: Types::TEXT, unique: true, nullable: false)]
     private ?string $value = null;
 
-    #[ORM\Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
-    private ?DateTimeImmutable $createdAt = null;
-
     #[ORM\Column(name: 'valid_until', type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $validUntil = null;
 
@@ -42,16 +39,6 @@ class UserAccessToken extends BaseEntity implements BaseEntityInterface, JsonSer
     public function setValue(string $value): void
     {
         $this->value = $value;
-    }
-
-    public function getCreatedAt(): ?DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
     }
 
     public function getValidUntil(): ?DateTimeImmutable

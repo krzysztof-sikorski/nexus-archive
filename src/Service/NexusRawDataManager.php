@@ -41,7 +41,8 @@ final class NexusRawDataManager
 
         $submitter = $userAccessToken->getOwner();
 
-        $nexusRawData->setSubmittedAt(submittedAt: $submittedAt);
+        $nexusRawData->setCreatedAt(createdAt: $submittedAt);
+        $nexusRawData->setLastModifiedAt(lastModifiedAt: $submittedAt);
         $nexusRawData->setSubmitter(submitter: $submitter);
 
         $this->entityManager->persist($nexusRawData);
