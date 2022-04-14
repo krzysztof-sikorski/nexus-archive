@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[
     ORM\Entity(repositoryClass: UserRepository::class),
     ORM\Table(name: '"user"'),
-    ORM\UniqueConstraint(name: 'username_uniq', fields: [AppParameters::SECURITY_USER_ENTITY_ID_FIELD]),
+    ORM\UniqueConstraint(name: 'user_username_uniq', fields: [AppParameters::SECURITY_USER_ENTITY_ID_FIELD]),
 ]
 class User extends BaseEntity
     implements BaseEntityInterface, UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable

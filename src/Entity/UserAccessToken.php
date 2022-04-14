@@ -16,6 +16,7 @@ use JsonSerializable;
     ORM\Entity(repositoryClass: UserAccessTokenRepository::class),
     ORM\Table(name: 'user_access_token'),
     ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
+    ORM\Index(fields: ['owner'], name: 'user_access_token_owner_idx'),
 ]
 class UserAccessToken extends BaseEntity implements BaseEntityInterface, JsonSerializable
 {
