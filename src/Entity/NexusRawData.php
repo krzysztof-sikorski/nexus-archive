@@ -44,6 +44,12 @@ class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerial
     #[ORM\Column(name: 'response_body', type: Types::TEXT, nullable: false)]
     private ?string $responseBody = null;
 
+    #[ORM\Column(name: 'parsed_at', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $parsedAt = null;
+
+    #[ORM\Column(name: 'parser_errors', type: 'json', nullable: true)]
+    private mixed $parserErrors = null;
+
     public function jsonSerialize(): array
     {
         return [
@@ -133,5 +139,25 @@ class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerial
     public function setResponseBody(?string $responseBody): void
     {
         $this->responseBody = $responseBody;
+    }
+
+    public function getParsedAt(): ?DateTimeImmutable
+    {
+        return $this->parsedAt;
+    }
+
+    public function setParsedAt(?DateTimeImmutable $parsedAt): void
+    {
+        $this->parsedAt = $parsedAt;
+    }
+
+    public function getParserErrors(): ?array
+    {
+        return $this->parserErrors;
+    }
+
+    public function setParserErrors(?array $parserErrors): void
+    {
+        $this->parserErrors = $parserErrors;
     }
 }
