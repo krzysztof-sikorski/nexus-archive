@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Admin\Field\JsonField;
 use App\Entity\NexusRawData;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -13,9 +14,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\HttpFoundation\Request;
+
+use function json_encode;
 
 final class NexusRawDataCrudController extends AbstractCrudController
 {
@@ -28,28 +32,40 @@ final class NexusRawDataCrudController extends AbstractCrudController
     {
         return parent::configureCrud(crud: $crud)
             ->setSearchFields(fieldNames: ['id', 'url'])
-            ->setDefaultSort(sortFieldsAndOrder: ['submittedAt' => 'DESC']);
+            ->setDefaultSort(sortFieldsAndOrder: ['createdAt' => 'DESC']);
     }
 
     public function configureFields(string $pageName): iterable
     {
+        $jsonFormatter = static function (mixed $value): string {
+            return json_encode(value: $value);
+        };
+
         yield IdField::new(propertyName: 'id')->setMaxLength(length: -1)->setDisabled(disabled: true);
-        yield DateTimeField::new(propertyName: 'submittedAt');
+        yield DateTimeField::new(propertyName: 'createdAt');
         yield AssociationField::new(propertyName: 'submitter')->onlyOnDetail();
         yield DateTimeField::new(propertyName: 'requestStartedAt')->onlyOnDetail();
         yield DateTimeField::new(propertyName: 'responseCompletedAt')->onlyOnDetail();
         yield TextField::new(propertyName: 'method');
-        yield TextField::new(propertyName: 'url')->setMaxLength(length: 40);
-        yield TextareaField::new(propertyName: 'formData')->onlyOnDetail();
+        yield TextField::new(propertyName: 'url')->setMaxLength(length: 255);
+        yield JsonField::new(propertyName: 'formData')->formatValue(callable: $jsonFormatter);
         yield TextEditorField::new(propertyName: 'responseBody')->onlyOnDetail();
+        yield DateTimeField::new(propertyName: 'parsedAt');
+        yield JsonField::new(propertyName: 'parserErrors')->onlyOnDetail()->formatValue(callable: $jsonFormatter);
     }
 
     public function configureFilters(Filters $filters): Filters
     {
+        $methodChoices = [Request::METHOD_GET => Request::METHOD_GET, Request::METHOD_POST => Request::METHOD_POST];
+        $methodFilter = ChoiceFilter::new(propertyName: 'method')->setChoices(choices: $methodChoices);
+
         return parent::configureFilters(filters: $filters)
             ->add(propertyNameOrFilter: 'id')
+            ->add(propertyNameOrFilter: 'createdAt')
+            ->add(propertyNameOrFilter: 'submitter')
+            ->add(propertyNameOrFilter: $methodFilter)
             ->add(propertyNameOrFilter: 'url')
-            ->add(propertyNameOrFilter: 'method');
+            ->add(propertyNameOrFilter: 'parsedAt');
     }
 
     public function configureActions(Actions $actions): Actions

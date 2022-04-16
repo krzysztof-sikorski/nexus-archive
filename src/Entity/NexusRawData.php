@@ -54,7 +54,7 @@ class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerial
     {
         return [
             'id' => $this->getId(),
-            'submittedAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
+            'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
             'submitterId' => $this->getSubmitter()?->getId(),
             'requestStartedAt' => $this->getRequestStartedAt()?->format(DateTimeInterface::ISO8601),
             'responseCompletedAt' => $this->getResponseCompletedAt()?->format(DateTimeInterface::ISO8601),

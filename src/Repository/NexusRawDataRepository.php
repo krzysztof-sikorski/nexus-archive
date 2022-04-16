@@ -36,7 +36,7 @@ final class NexusRawDataRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder(alias: 'nrd')
             ->select(select: 'COUNT(nrd)')
-            ->where(predicates: 'nrd.submittedAt BETWEEN :from AND :to')
+            ->where(predicates: 'nrd.createdAt BETWEEN :from AND :to')
             ->setParameter(key: 'from', value: $from)
             ->setParameter(key: 'to', value: $to);
 

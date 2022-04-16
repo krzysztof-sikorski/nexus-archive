@@ -23,7 +23,7 @@ final class NexusRawDataManager
         string $userAccessTokenValue,
         object $decodedJsonData
     ): NexusRawDataSubmissionResult {
-        $submittedAt = $this->clock->getCurrentDateTime();
+        $currentDateTime = $this->clock->getCurrentDateTime();
 
         $nexusRawData = $this->nexusRawDataFactory->createFromJsonDataSubmission(decodedJsonData: $decodedJsonData);
 
@@ -41,8 +41,8 @@ final class NexusRawDataManager
 
         $submitter = $userAccessToken->getOwner();
 
-        $nexusRawData->setCreatedAt(createdAt: $submittedAt);
-        $nexusRawData->setLastModifiedAt(lastModifiedAt: $submittedAt);
+        $nexusRawData->setCreatedAt(createdAt: $currentDateTime);
+        $nexusRawData->setLastModifiedAt(lastModifiedAt: $currentDateTime);
         $nexusRawData->setSubmitter(submitter: $submitter);
 
         $this->entityManager->persist($nexusRawData);
