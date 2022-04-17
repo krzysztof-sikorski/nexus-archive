@@ -7,11 +7,13 @@ namespace App\Service;
 use App\Doctrine\Entity\NexusRawData;
 use DateTimeImmutable;
 
+use DateTimeZone;
+
 use function array_key_exists;
 
 final class NexusRawDataFactory
 {
-    public function createFromJsonDataSubmission(object $decodedJsonData): NexusRawData
+    public function createFromJsonDataSubmission(object $decodedJsonData, DateTimeZone $timeZone): NexusRawData
     {
         $nexusRawData = new NexusRawData();
 
@@ -19,10 +21,12 @@ final class NexusRawDataFactory
 
         if (array_key_exists(key: 'requestStartedAt', array: $data)) {
             $requestStartedAt = new DateTimeImmutable(datetime: $data['requestStartedAt']);
+            $requestStartedAt->setTimezone(timezone: $timeZone);
             $nexusRawData->setRequestStartedAt(requestStartedAt: $requestStartedAt);
         }
         if (array_key_exists(key: 'responseCompletedAt', array: $data)) {
             $responseCompletedAt = new DateTimeImmutable(datetime: $data['responseCompletedAt']);
+            $responseCompletedAt->setTimezone(timezone: $timeZone);
             $nexusRawData->setResponseCompletedAt(responseCompletedAt: $responseCompletedAt);
         }
         if (array_key_exists(key: 'method', array: $data)) {

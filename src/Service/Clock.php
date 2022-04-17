@@ -10,9 +10,14 @@ use DateTimeZone;
 
 final class Clock implements ClockInterface
 {
+    public function getUtcTimeZone(): DateTimeZone
+    {
+        return new DateTimeZone(timezone: 'UTC');
+    }
+
     public function getCurrentDateTime(): DateTimeImmutable
     {
-        $timezone = new DateTimeZone(timezone: 'UTC');
+        $timezone = $this->getUtcTimeZone();
         return new DateTimeImmutable(datetime: 'now', timezone: $timezone);
     }
 }

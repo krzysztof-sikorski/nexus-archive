@@ -23,9 +23,13 @@ final class NexusRawDataManager
         string $userAccessTokenValue,
         object $decodedJsonData
     ): NexusRawDataSubmissionResult {
+        $timeZone = $this->clock->getUtcTimeZone();
         $currentDateTime = $this->clock->getCurrentDateTime();
 
-        $nexusRawData = $this->nexusRawDataFactory->createFromJsonDataSubmission(decodedJsonData: $decodedJsonData);
+        $nexusRawData = $this->nexusRawDataFactory->createFromJsonDataSubmission(
+            decodedJsonData: $decodedJsonData,
+            timeZone: $timeZone
+        );
 
         $userAccessToken = $this->userAccessTokenRepository->findByValue(value: $userAccessTokenValue);
         if (null === $userAccessToken) {
