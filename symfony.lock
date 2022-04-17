@@ -93,9 +93,6 @@
     "monolog/monolog": {
         "version": "2.3.5"
     },
-    "nikic/php-parser": {
-        "version": "v4.13.0"
-    },
     "opis/json-schema": {
         "version": "2.2.0"
     },
@@ -237,15 +234,6 @@
         "files": [
             "config/packages/lock.yaml"
         ]
-    },
-    "symfony/maker-bundle": {
-        "version": "1.34",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
-        }
     },
     "symfony/monolog-bridge": {
         "version": "v5.3.7"
