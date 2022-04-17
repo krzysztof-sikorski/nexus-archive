@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Contract\Entity;
+namespace App\Contract\Doctrine\Entity;
 
 use DateTimeImmutable;
 use Symfony\Component\Uid\Uuid;

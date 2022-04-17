@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Contract\Service\ClockInterface;
+use App\Doctrine\Repository\UserAccessTokenRepository;
 use App\DTO\NexusRawDataSubmissionResult;
-use App\Repository\UserAccessTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class NexusRawDataManager

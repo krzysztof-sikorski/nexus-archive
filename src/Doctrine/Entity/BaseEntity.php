@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace App\Doctrine\Entity;
 
 use App\Contract\Config\AppParameters;
-use App\Contract\Entity\BaseEntityInterface;
+use App\Contract\Doctrine\Entity\BaseEntityInterface;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

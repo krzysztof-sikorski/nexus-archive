@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Contract\Config\AppParameters;
 use App\Contract\Config\AppRoutes;
 use App\Contract\UserRoles;
-use App\Entity\User;
+use App\Doctrine\Entity\User;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Config\SecurityConfig;

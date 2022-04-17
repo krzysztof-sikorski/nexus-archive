@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Contract\Config\AppRoutes;
-use App\Entity\NexusRawData;
-use App\Entity\User;
-use App\Entity\UserAccessToken;
-use App\Repository\NexusRawDataRepository;
-use App\Repository\UserAccessTokenRepository;
-use App\Repository\UserRepository;
+use App\Doctrine\Entity\NexusRawData;
+use App\Doctrine\Entity\User;
+use App\Doctrine\Entity\UserAccessToken;
+use App\Doctrine\Repository\NexusRawDataRepository;
+use App\Doctrine\Repository\UserAccessTokenRepository;
+use App\Doctrine\Repository\UserRepository;
 use DateTimeImmutable;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace App\Doctrine\Entity;
 
-use App\Contract\Entity\BaseEntityInterface;
-use App\Repository\NexusRawDataRepository;
+use App\Contract\Doctrine\Entity\BaseEntityInterface;
+use App\Doctrine\Repository\NexusRawDataRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;

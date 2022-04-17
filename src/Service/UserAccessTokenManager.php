@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Contract\Service\ClockInterface;
-use App\Entity\User;
-use App\Entity\UserAccessToken;
+use App\Doctrine\Entity\User;
+use App\Doctrine\Entity\UserAccessToken;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;

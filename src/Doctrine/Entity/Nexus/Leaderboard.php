@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Nexus;
+namespace App\Doctrine\Entity\Nexus;
 
 use App\Contract\Entity\LeaderboardTypes;
-use App\Entity\BaseEntity;
-use App\Repository\Nexus\LeaderboardRepository;
+use App\Doctrine\Entity\BaseEntity;
+use App\Doctrine\Repository\Nexus\LeaderboardRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[

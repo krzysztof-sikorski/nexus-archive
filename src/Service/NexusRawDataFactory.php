@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\NexusRawData;
+use App\Doctrine\Entity\NexusRawData;
 use DateTimeImmutable;
 
 use function array_key_exists;

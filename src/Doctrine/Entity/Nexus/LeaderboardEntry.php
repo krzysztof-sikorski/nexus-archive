@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Nexus;
+namespace App\Doctrine\Entity\Nexus;
 
-use App\Entity\BaseEntity;
-use App\Repository\Nexus\LeaderboardEntryRepository;
+use App\Doctrine\Entity\BaseEntity;
+use App\Doctrine\Repository\Nexus\LeaderboardEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[

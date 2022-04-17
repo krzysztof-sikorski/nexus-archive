@@ -28,8 +28,8 @@ return static function (
     $entityManagerConfig->autoMapping(value: true);
 
     $mappingConfig = $entityManagerConfig->mapping(name: 'App');
-    $mappingConfig->dir(value: '%kernel.project_dir%/src/Entity');
-    $mappingConfig->prefix('App\Entity');
+    $mappingConfig->dir(value: '%kernel.project_dir%/src/Doctrine/Entity');
+    $mappingConfig->prefix('App\Doctrine\Entity');
     $mappingConfig->alias(value: 'App');
     $mappingConfig->isBundle(value: false);
 

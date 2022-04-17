@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace App\Doctrine\Entity;
 
-use App\Contract\Entity\BaseEntityInterface;
-use App\Repository\UserAccessTokenRepository;
+use App\Contract\Doctrine\Entity\BaseEntityInterface;
+use App\Doctrine\Repository\UserAccessTokenRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;

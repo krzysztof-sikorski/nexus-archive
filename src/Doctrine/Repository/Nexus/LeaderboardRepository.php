@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Nexus;
+namespace App\Doctrine\Repository\Nexus;
 
-use App\Entity\Nexus\Leaderboard;
+use App\Doctrine\Entity\Nexus\Leaderboard;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
