@@ -84,17 +84,17 @@ final class Version0001 extends AbstractMigration
         // create foreign keys
         $this->addSql(
             <<<'SQL'
-ALTER TABLE nexus_raw_data ADD CONSTRAINT FK_7BE0EB04919E5513
-FOREIGN KEY (submitter_id) REFERENCES "user" (id)
-NOT DEFERRABLE INITIALLY IMMEDIATE
-SQL
+            ALTER TABLE nexus_raw_data ADD CONSTRAINT FK_7BE0EB04919E5513
+            FOREIGN KEY (submitter_id) REFERENCES "user" (id)
+            NOT DEFERRABLE INITIALLY IMMEDIATE
+            SQL
         );
         $this->addSql(
             <<<'SQL'
-ALTER TABLE user_access_token ADD CONSTRAINT FK_366EA16A7E3C61F9
-FOREIGN KEY (owner_id) REFERENCES "user" (id)
-NOT DEFERRABLE INITIALLY IMMEDIATE
-SQL
+            ALTER TABLE user_access_token ADD CONSTRAINT FK_366EA16A7E3C61F9
+            FOREIGN KEY (owner_id) REFERENCES "user" (id)
+            NOT DEFERRABLE INITIALLY IMMEDIATE
+            SQL
         );
     }
 
