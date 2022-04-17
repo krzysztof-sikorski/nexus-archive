@@ -26,11 +26,10 @@ final class UserAccessTokenManager
 
     public function create(User $owner, DateInterval $duration): UserAccessToken
     {
-        $uuid = Uuid::v4();
         $createdAt = $this->clock->getCurrentDateTime();
         $validUntil = $createdAt->add(interval: $duration);
 
-        $token = new UserAccessToken(id: $uuid);
+        $token = new UserAccessToken();
         $token->setOwner(owner: $owner);
         $token->setValue(value: $this->generateValue());
         $token->setCreatedAt(createdAt: $createdAt);

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Doctrine\Entity;
 
 use App\Contract\Config\AppParameters;
-use App\Contract\Doctrine\Entity\BaseEntityInterface;
+use App\Contract\Doctrine\Entity\DatedEntityInterface;
+use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Doctrine\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -19,9 +20,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
     ORM\Table(name: '"user"'),
     ORM\UniqueConstraint(name: 'user_username_uniq', fields: [AppParameters::SECURITY_USER_ENTITY_ID_FIELD]),
 ]
-class User extends BaseEntity
-    implements BaseEntityInterface, UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+class User
+    implements UuidPrimaryKeyInterface, DatedEntityInterface,
+               UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
+    use UuidPrimaryKeyTrait;
+    use DatedEntityTrait;
+
     public const USERNAME_MAX_LENGTH = 180;
 
     #[ORM\Column(name: 'username', type: Types::STRING, length: self::USERNAME_MAX_LENGTH, nullable: false)]
@@ -35,6 +40,11 @@ class User extends BaseEntity
 
     #[ORM\Column(name: 'enabled', type: Types::BOOLEAN, nullable: false)]
     private bool $enabled = false;
+
+    public function __construct()
+    {
+        $this->generateId();
+    }
 
     public function __toString(): string
     {

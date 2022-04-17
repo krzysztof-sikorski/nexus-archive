@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Entity\Nexus;
 
-use App\Doctrine\Entity\BaseEntity;
+use App\Contract\Doctrine\Entity\DatedEntityInterface;
+use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
+use App\Doctrine\Entity\DatedEntityTrait;
+use App\Doctrine\Entity\UuidPrimaryKeyTrait;
 use App\Doctrine\Repository\Nexus\LeaderboardEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,8 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
     ORM\UniqueConstraint(name: 'nexus_leaderboard_entry_uniq', fields: ['position']),
     ORM\Index(fields: ['leaderboard'], name: 'nexus_leaderboard_entry_leaderboard_idx'),
 ]
-class LeaderboardEntry extends BaseEntity
+class LeaderboardEntry implements UuidPrimaryKeyInterface, DatedEntityInterface
 {
+    use UuidPrimaryKeyTrait;
+    use DatedEntityTrait;
+
     #[
         ORM\ManyToOne(targetEntity: Leaderboard::class),
         ORM\JoinColumn(name: 'leaderboard_id', referencedColumnName: 'id', nullable: false),
@@ -30,6 +36,11 @@ class LeaderboardEntry extends BaseEntity
 
     #[ORM\Column(name: 'value', type: 'integer', nullable: false)]
     private ?int $value = null;
+
+    public function __construct()
+    {
+        $this->generateId();
+    }
 
     public function getLeaderboard(): ?Leaderboard
     {

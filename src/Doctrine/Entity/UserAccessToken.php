@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Entity;
 
-use App\Contract\Doctrine\Entity\BaseEntityInterface;
+use App\Contract\Doctrine\Entity\DatedEntityInterface;
+use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Doctrine\Repository\UserAccessTokenRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -18,8 +19,11 @@ use JsonSerializable;
     ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
     ORM\Index(fields: ['owner'], name: 'user_access_token_owner_idx'),
 ]
-class UserAccessToken extends BaseEntity implements BaseEntityInterface, JsonSerializable
+class UserAccessToken implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSerializable
 {
+    use UuidPrimaryKeyTrait;
+    use DatedEntityTrait;
+
     #[ORM\Column(name: 'value', type: Types::TEXT, unique: true, nullable: false)]
     private ?string $value = null;
 
@@ -31,6 +35,11 @@ class UserAccessToken extends BaseEntity implements BaseEntityInterface, JsonSer
         ORM\JoinColumn(name: 'owner_id', referencedColumnName: 'id', nullable: false),
     ]
     private ?User $owner = null;
+
+    public function __construct()
+    {
+        $this->generateId();
+    }
 
     public function getValue(): ?string
     {

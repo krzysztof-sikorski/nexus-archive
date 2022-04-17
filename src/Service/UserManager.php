@@ -8,7 +8,6 @@ use App\Contract\Service\ClockInterface;
 use App\Doctrine\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Uid\Uuid;
 
 final class UserManager
 {
@@ -30,10 +29,9 @@ final class UserManager
         string $plaintextPassword,
         array $roles
     ): User {
-        $uuid = Uuid::v4();
         $createdAt = $this->clock->getCurrentDateTime();
 
-        $user = new User(id: $uuid);
+        $user = new User();
         $user->setCreatedAt(createdAt: $createdAt);
         $user->setLastModifiedAt(lastModifiedAt: $createdAt);
         $user->setUsername(username: $username);

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Entity;
 
-use App\Contract\Doctrine\Entity\BaseEntityInterface;
+use App\Contract\Doctrine\Entity\DatedEntityInterface;
+use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Doctrine\Repository\NexusRawDataRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -18,8 +19,11 @@ use JsonSerializable;
     ORM\Index(columns: ['created_at', 'request_started_at', 'id'], name: 'nexus_raw_data_sorting_idx'),
     ORM\Index(columns: ['submitter_id'], name: 'nexus_raw_data_submitter_idx'),
 ]
-class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerializable
+class NexusRawData implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSerializable
 {
+    use UuidPrimaryKeyTrait;
+    use DatedEntityTrait;
+
     #[
         ORM\ManyToOne(targetEntity: User::class),
         ORM\JoinColumn(name: 'submitter_id', referencedColumnName: 'id', nullable: false),
@@ -49,6 +53,11 @@ class NexusRawData extends BaseEntity implements BaseEntityInterface, JsonSerial
 
     #[ORM\Column(name: 'parser_errors', type: 'json', nullable: true)]
     private mixed $parserErrors = null;
+
+    public function __construct()
+    {
+        $this->generateId();
+    }
 
     public function jsonSerialize(): array
     {
