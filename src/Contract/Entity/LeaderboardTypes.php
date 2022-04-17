@@ -9,4 +9,12 @@ final class LeaderboardTypes
 {
     public const BREATH = 'breath';
     public const CAREER = 'career';
+
+    public static function cases(): array
+    {
+        return [
+            self::BREATH,
+            self::CAREER,
+        ];
+    }
 }
