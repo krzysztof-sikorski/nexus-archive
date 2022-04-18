@@ -4,43 +4,34 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Entity\Nexus;
 
-use App\Contract\Doctrine\Entity\DatedEntityInterface;
-use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
-use App\Doctrine\Entity\DatedEntityTrait;
-use App\Doctrine\Entity\UuidPrimaryKeyTrait;
 use App\Doctrine\Repository\Nexus\LeaderboardEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
     ORM\Entity(repositoryClass: LeaderboardEntryRepository::class),
     ORM\Table(name: 'nexus_leaderboard_entry'),
-    ORM\UniqueConstraint(name: 'nexus_leaderboard_entry_uniq', fields: ['position']),
     ORM\Index(fields: ['leaderboard'], name: 'nexus_leaderboard_entry_leaderboard_idx'),
 ]
-class LeaderboardEntry implements UuidPrimaryKeyInterface, DatedEntityInterface
+class LeaderboardEntry
 {
-    use UuidPrimaryKeyTrait;
-    use DatedEntityTrait;
-
     #[
+        ORM\Id,
         ORM\ManyToOne(targetEntity: Leaderboard::class),
         ORM\JoinColumn(name: 'leaderboard_id', referencedColumnName: 'id', nullable: false),
     ]
     private ?Leaderboard $leaderboard = null;
 
+    #[
+        ORM\Id,
+        ORM\Column(name: 'position', type: 'integer', nullable: false),
+    ]
+    private ?int $position = null;
+
     #[ORM\Column(name: 'character_name', type: 'text', nullable: false)]
     private ?string $characterName = null;
 
-    #[ORM\Column(name: 'position', type: 'integer', nullable: false)]
-    private ?int $position = null;
-
-    #[ORM\Column(name: 'value', type: 'integer', nullable: false)]
-    private ?int $value = null;
-
-    public function __construct()
-    {
-        $this->generateId();
-    }
+    #[ORM\Column(name: 'score', type: 'integer', nullable: false)]
+    private ?int $score = null;
 
     public function getLeaderboard(): ?Leaderboard
     {
@@ -50,16 +41,6 @@ class LeaderboardEntry implements UuidPrimaryKeyInterface, DatedEntityInterface
     public function setLeaderboard(?Leaderboard $leaderboard): void
     {
         $this->leaderboard = $leaderboard;
-    }
-
-    public function getCharacterName(): ?string
-    {
-        return $this->characterName;
-    }
-
-    public function setCharacterName(string $characterName): void
-    {
-        $this->characterName = $characterName;
     }
 
     public function getPosition(): ?int
@@ -72,13 +53,23 @@ class LeaderboardEntry implements UuidPrimaryKeyInterface, DatedEntityInterface
         $this->position = $position;
     }
 
-    public function getValue(): ?int
+    public function getCharacterName(): ?string
     {
-        return $this->value;
+        return $this->characterName;
     }
 
-    public function setValue(int $value): void
+    public function setCharacterName(string $characterName): void
     {
-        $this->value = $value;
+        $this->characterName = $characterName;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): void
+    {
+        $this->score = $score;
     }
 }

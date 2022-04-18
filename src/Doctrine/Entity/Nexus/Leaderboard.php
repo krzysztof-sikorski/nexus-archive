@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Doctrine\Entity\Nexus;
 
 use App\Contract\Doctrine\Entity\DatedEntityInterface;
+use App\Contract\Doctrine\Entity\GamePeriodReferenceInterface;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
-use App\Contract\Entity\LeaderboardTypes;
+use App\Contract\Entity\Nexus\GamePeriodInterface;
 use App\Doctrine\Entity\DatedEntityTrait;
 use App\Doctrine\Entity\UuidPrimaryKeyTrait;
 use App\Doctrine\Repository\Nexus\LeaderboardRepository;
@@ -15,66 +16,49 @@ use Doctrine\ORM\Mapping as ORM;
 #[
     ORM\Entity(repositoryClass: LeaderboardRepository::class),
     ORM\Table(name: 'nexus_leaderboard'),
-    ORM\UniqueConstraint(name: 'nexus_leaderboard_uniq', fields: ['title']),
+    ORM\UniqueConstraint(name: 'nexus_leaderboard_uniq', fields: ['category', 'gamePeriod']),
+    ORM\Index(fields: ['category'], name: 'nexus_leaderboard_category_idx'),
+    ORM\Index(fields: ['gamePeriod'], name: 'nexus_leaderboard_game_period_idx'),
 ]
-class Leaderboard implements UuidPrimaryKeyInterface, DatedEntityInterface
+class Leaderboard implements UuidPrimaryKeyInterface, GamePeriodReferenceInterface, DatedEntityInterface
 {
     use UuidPrimaryKeyTrait;
     use DatedEntityTrait;
 
-    #[ORM\Column(name: 'title', type: 'text', nullable: false)]
-    private ?string $title = null;
+    #[
+        ORM\ManyToOne(targetEntity: LeaderboardCategory::class),
+        ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: false),
+    ]
+    private ?LeaderboardCategory $category = null;
 
-    #[ORM\Column(name: 'value_title', type: 'text', nullable: false)]
-    private ?string $valueTitle = null;
-
-    #[ORM\Column(name: 'career', type: 'boolean', nullable: false)]
-    private bool $career = false;
+    #[
+        ORM\ManyToOne(targetEntity: GamePeriod::class),
+        ORM\JoinColumn(name: 'game_period_id', referencedColumnName: 'id', nullable: false),
+    ]
+    protected ?GamePeriodInterface $gamePeriod = null;
 
     public function __construct()
     {
         $this->generateId();
     }
 
-    public function getTitle(): ?string
+    public function getCategory(): ?LeaderboardCategory
     {
-        return $this->title;
+        return $this->category;
     }
 
-    public function setTitle(string $title): void
+    public function setCategory(LeaderboardCategory $category): void
     {
-        $this->title = $title;
+        $this->category = $category;
     }
 
-    public function getValueTitle(): ?string
+    public function getGamePeriod(): ?GamePeriodInterface
     {
-        return $this->valueTitle;
+        return $this->gamePeriod;
     }
 
-    public function setValueTitle(string $valueTitle): void
+    public function setGamePeriod(GamePeriodInterface $gamePeriod): void
     {
-        $this->valueTitle = $valueTitle;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->career ? LeaderboardTypes::CAREER : LeaderboardTypes::BREATH;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->career = LeaderboardTypes::CAREER === $type;
-    }
-
-    public function getCareer(): bool
-    {
-        return $this->career;
-    }
-
-    public function setCareer(bool $career): self
-    {
-        $this->career = $career;
-
-        return $this;
+        $this->gamePeriod = $gamePeriod;
     }
 }
