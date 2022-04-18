@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Contract\Config\AppRoutes;
-use App\Doctrine\Entity\NexusRawData;
+use App\Doctrine\Entity\PageView;
 use App\Doctrine\Entity\User;
 use App\Doctrine\Entity\UserAccessToken;
-use App\Doctrine\Repository\NexusRawDataRepository;
+use App\Doctrine\Repository\PageViewRepository;
 use App\Doctrine\Repository\UserAccessTokenRepository;
 use App\Doctrine\Repository\UserRepository;
 use DateTimeImmutable;
@@ -28,7 +28,7 @@ final class DashboardController extends AbstractDashboardController
         private Environment $twigEnvironment,
         private UserRepository $userRepository,
         private UserAccessTokenRepository $userAccessTokenRepository,
-        private NexusRawDataRepository $nexusRawDataRepository
+        private PageViewRepository $pageViewRepository
     ) {
     }
 
@@ -37,12 +37,12 @@ final class DashboardController extends AbstractDashboardController
     {
         $userTotalCount = $this->userRepository->getTotalCount();
         $tokenTotalCount = $this->userAccessTokenRepository->getTotalCount();
-        $dataTotalCount = $this->nexusRawDataRepository->getTotalCount();
-        $dataWeeklyCount = $this->nexusRawDataRepository->getPartialCount(
+        $dataTotalCount = $this->pageViewRepository->getTotalCount();
+        $dataWeeklyCount = $this->pageViewRepository->getPartialCount(
             new DateTimeImmutable(datetime: 'midnight UTC - 1 week'),
             new DateTimeImmutable(datetime: 'midnight UTC')
         );
-        $dataDailyCount = $this->nexusRawDataRepository->getPartialCount(
+        $dataDailyCount = $this->pageViewRepository->getPartialCount(
             new DateTimeImmutable(datetime: 'midnight UTC - 1 day'),
             new DateTimeImmutable(datetime: 'midnight UTC')
         );
@@ -50,9 +50,9 @@ final class DashboardController extends AbstractDashboardController
         $context = [
             'user_total_count' => $userTotalCount,
             'token_total_count' => $tokenTotalCount,
-            'data_total_count' => $dataTotalCount,
-            'data_weekly_count' => $dataWeeklyCount,
-            'data_daily_count' => $dataDailyCount,
+            'page_view_total_count' => $dataTotalCount,
+            'page_view_weekly_count' => $dataWeeklyCount,
+            'page_view_daily_count' => $dataDailyCount,
         ];
 
         $content = $this->twigEnvironment->render(name: 'admin/dashboard/index.html.twig', context: $context);
@@ -71,8 +71,8 @@ final class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard(label: 'Dashboard', icon: 'fa fa-home');
-        yield MenuItem::section(label: 'Raw data');
-        yield MenuItem::linkToCrud(label: 'Raw data', icon: 'fas fa-list', entityFqcn: NexusRawData::class);
+        yield MenuItem::section(label: 'Page views');
+        yield MenuItem::linkToCrud(label: 'Page views', icon: 'fas fa-list', entityFqcn: PageView::class);
         yield MenuItem::section(label: 'Users');
         yield MenuItem::linkToCrud(label: 'Users', icon: 'fas fa-users', entityFqcn: User::class);
         yield MenuItem::linkToCrud(

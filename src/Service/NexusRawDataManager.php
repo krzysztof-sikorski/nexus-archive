@@ -43,11 +43,11 @@ final class NexusRawDataManager
             );
         }
 
-        $submitter = $userAccessToken->getOwner();
+        $owner = $userAccessToken->getOwner();
 
         $nexusRawData->setCreatedAt(createdAt: $currentDateTime);
         $nexusRawData->setLastModifiedAt(lastModifiedAt: $currentDateTime);
-        $nexusRawData->setSubmitter(submitter: $submitter);
+        $nexusRawData->setOwner(owner: $owner);
 
         $this->entityManager->persist($nexusRawData);
         $this->entityManager->flush();

@@ -6,7 +6,7 @@ namespace App\Doctrine\Entity;
 
 use App\Contract\Doctrine\Entity\DatedEntityInterface;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
-use App\Doctrine\Repository\NexusRawDataRepository;
+use App\Doctrine\Repository\PageViewRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -14,26 +14,26 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 #[
-    ORM\Entity(repositoryClass: NexusRawDataRepository::class),
-    ORM\Table(name: 'nexus_raw_data'),
-    ORM\Index(columns: ['created_at', 'request_started_at', 'id'], name: 'nexus_raw_data_sorting_idx'),
-    ORM\Index(columns: ['submitter_id'], name: 'nexus_raw_data_submitter_idx'),
+    ORM\Entity(repositoryClass: PageViewRepository::class),
+    ORM\Table(name: 'page_view'),
+    ORM\Index(columns: ['created_at', 'request_started_at', 'id'], name: 'page_view_sorting_idx'),
+    ORM\Index(columns: ['owner_id'], name: 'page_view_owner_idx'),
 ]
-class NexusRawData implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSerializable
+class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSerializable
 {
     use UuidPrimaryKeyTrait;
     use DatedEntityTrait;
 
     #[
         ORM\ManyToOne(targetEntity: User::class),
-        ORM\JoinColumn(name: 'submitter_id', referencedColumnName: 'id', nullable: false),
+        ORM\JoinColumn(name: 'owner_id', referencedColumnName: 'id', nullable: false),
     ]
-    private ?User $submitter = null;
+    private ?User $owner = null;
 
-    #[ORM\Column(name: 'request_started_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
+    #[ORM\Column(name: 'request_started_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $requestStartedAt = null;
 
-    #[ORM\Column(name: 'response_completed_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
+    #[ORM\Column(name: 'response_completed_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $responseCompletedAt = null;
 
     #[ORM\Column(name: 'method', type: Types::TEXT, nullable: false)]
@@ -64,7 +64,7 @@ class NexusRawData implements UuidPrimaryKeyInterface, DatedEntityInterface, Jso
         return [
             'id' => $this->getId(),
             'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
-            'submitterId' => $this->getSubmitter()?->getId(),
+            'ownerId' => $this->getOwner()?->getId(),
             'requestStartedAt' => $this->getRequestStartedAt()?->format(DateTimeInterface::ISO8601),
             'responseCompletedAt' => $this->getResponseCompletedAt()?->format(DateTimeInterface::ISO8601),
             'method' => $this->getMethod(),
@@ -74,14 +74,14 @@ class NexusRawData implements UuidPrimaryKeyInterface, DatedEntityInterface, Jso
         ];
     }
 
-    public function getSubmitter(): ?User
+    public function getOwner(): ?User
     {
-        return $this->submitter;
+        return $this->owner;
     }
 
-    public function setSubmitter(?User $submitter): void
+    public function setOwner(?User $owner): void
     {
-        $this->submitter = $submitter;
+        $this->owner = $owner;
     }
 
     public function getRequestStartedAt(): ?DateTimeImmutable

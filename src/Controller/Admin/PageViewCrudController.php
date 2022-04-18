@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Admin\Field\JsonField;
-use App\Doctrine\Entity\NexusRawData;
+use App\Doctrine\Entity\PageView;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -21,11 +21,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 use function json_encode;
 
-final class NexusRawDataCrudController extends AbstractCrudController
+final class PageViewCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return NexusRawData::class;
+        return PageView::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -43,7 +43,7 @@ final class NexusRawDataCrudController extends AbstractCrudController
 
         yield IdField::new(propertyName: 'id')->setMaxLength(length: -1)->setDisabled(disabled: true);
         yield DateTimeField::new(propertyName: 'createdAt');
-        yield AssociationField::new(propertyName: 'submitter')->onlyOnDetail();
+        yield AssociationField::new(propertyName: 'owner')->onlyOnDetail();
         yield DateTimeField::new(propertyName: 'requestStartedAt')->onlyOnDetail();
         yield DateTimeField::new(propertyName: 'responseCompletedAt')->onlyOnDetail();
         yield TextField::new(propertyName: 'method');
@@ -62,7 +62,7 @@ final class NexusRawDataCrudController extends AbstractCrudController
         return parent::configureFilters(filters: $filters)
             ->add(propertyNameOrFilter: 'id')
             ->add(propertyNameOrFilter: 'createdAt')
-            ->add(propertyNameOrFilter: 'submitter')
+            ->add(propertyNameOrFilter: 'owner')
             ->add(propertyNameOrFilter: $methodFilter)
             ->add(propertyNameOrFilter: 'url')
             ->add(propertyNameOrFilter: 'parsedAt');
