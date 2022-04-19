@@ -7,7 +7,6 @@ namespace App\Command;
 use App\Contract\Config\AppParameters;
 use App\Contract\UserRoles;
 use App\Service\Repository\UserRepository;
-use App\Service\UserManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +32,6 @@ final class UserCreateCommand extends BaseCommand
 
     public function __construct(
         private UserRepository $userRepository,
-        private UserManager $userManager,
         SerializerInterface $serializer,
     ) {
         parent::__construct(serializer: $serializer);
@@ -90,7 +88,7 @@ final class UserCreateCommand extends BaseCommand
         $this->displayValue(io: $io, label: 'Selected password', value: $this->plaintextPassword);
         $this->displayValue(io: $io, label: 'Selected roles', value: $this->roles);
 
-        $user = $this->userManager->create(
+        $user = $this->userRepository->create(
             username: $this->username,
             plaintextPassword: $this->plaintextPassword,
             roles: $this->roles
