@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Doctrine\Entity\User;
+use App\Service\Repository\UserAccessTokenRepository;
 use App\Service\Repository\UserRepository;
-use App\Service\UserAccessTokenManager;
 use DateInterval;
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -35,7 +35,7 @@ final class UserCreateAccessTokenCommand extends BaseCommand
 
     public function __construct(
         private UserRepository $userRepository,
-        private UserAccessTokenManager $userAccessTokenManager,
+        private UserAccessTokenRepository $userAccessTokenRepository,
         SerializerInterface $serializer,
     ) {
         parent::__construct(serializer: $serializer);
@@ -113,7 +113,7 @@ final class UserCreateAccessTokenCommand extends BaseCommand
         $message = sprintf('Selected duration: %s (parsed as: %s)', $this->durationStr, $parsedDuration);
         $io->info(message: $message);
 
-        $token = $this->userAccessTokenManager->create(owner: $this->owner, duration: $this->duration);
+        $token = $this->userAccessTokenRepository->create(owner: $this->owner, duration: $this->duration);
 
         $this->displayValue(io: $io, label: 'Created token', value: $token);
 

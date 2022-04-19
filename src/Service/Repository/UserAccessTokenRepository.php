@@ -4,14 +4,45 @@ declare(strict_types=1);
 
 namespace App\Service\Repository;
 
+use App\Contract\Service\ClockInterface;
+use App\Doctrine\Entity\User;
 use App\Doctrine\Entity\UserAccessToken;
+use App\Service\TokenGenerator;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserAccessTokenRepository
 {
     public function __construct(
+        private ClockInterface $clock,
+        private TokenGenerator $tokenGenerator,
         private EntityManagerInterface $entityManager,
     ) {
+    }
+
+    public function create(User $owner, DateInterval $duration): UserAccessToken
+    {
+        $createdAt = $this->clock->getCurrentDateTime();
+        $validUntil = $createdAt->add(interval: $duration);
+
+        $token = new UserAccessToken();
+        $token->setOwner(owner: $owner);
+        $token->setValue(value: $this->tokenGenerator->generate());
+        $token->setCreatedAt(createdAt: $createdAt);
+        $token->setLastModifiedAt(lastModifiedAt: $createdAt);
+        $token->setValidUntil(validUntil: $validUntil);
+
+        $this->entityManager->persist($token);
+        $this->entityManager->flush();
+
+        return $token;
+    }
+
+    public function prune(): void
+    {
+        $dql = 'DELETE FROM App:UserAccessToken AS t WHERE t.validUntil < current_timestamp()';
+        $query = $this->entityManager->createQuery(dql: $dql);
+        $query->execute();
     }
 
     public function findByValue(string $value): ?UserAccessToken
