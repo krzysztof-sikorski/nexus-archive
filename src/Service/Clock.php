@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Contract\Service\ClockInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 
 final class Clock implements ClockInterface
@@ -15,7 +16,7 @@ final class Clock implements ClockInterface
         return new DateTimeZone(timezone: 'UTC');
     }
 
-    public function getCurrentDateTime(): DateTimeImmutable
+    public function getCurrentDateTime(): DateTimeInterface
     {
         $timezone = $this->getUtcTimeZone();
         return new DateTimeImmutable(datetime: 'now', timezone: $timezone);

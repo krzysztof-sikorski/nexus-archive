@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Contract\Doctrine\Entity;
 
-use DateTimeImmutable;
+use DateTimeInterface;
 
 interface DatedEntityInterface
 {
-    public function getCreatedAt(): ?DateTimeImmutable;
+    public function getCreatedAt(): ?DateTimeInterface;
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): void;
+    public function setCreatedAt(DateTimeInterface $createdAt): void;
 
-    public function getLastModifiedAt(): ?DateTimeImmutable;
+    public function getLastModifiedAt(): ?DateTimeInterface;
 
-    public function setLastModifiedAt(DateTimeImmutable $lastModifiedAt): void;
+    public function setLastModifiedAt(DateTimeInterface $lastModifiedAt): void;
 }

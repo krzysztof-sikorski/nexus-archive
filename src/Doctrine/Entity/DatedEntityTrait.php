@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Doctrine\Entity;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,23 +20,23 @@ trait DatedEntityTrait
     #[ORM\Column(name: 'last_modified_at', type: Types::DATETIMETZ_IMMUTABLE, nullable: false)]
     protected ?DateTimeImmutable $lastModifiedAt = null;
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): void
+    public function setCreatedAt(DateTimeInterface $createdAt): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = DateTimeImmutable::createFromInterface(object: $createdAt);
     }
 
-    public function getLastModifiedAt(): ?DateTimeImmutable
+    public function getLastModifiedAt(): ?DateTimeInterface
     {
         return $this->lastModifiedAt;
     }
 
-    public function setLastModifiedAt(DateTimeImmutable $lastModifiedAt): void
+    public function setLastModifiedAt(DateTimeInterface $lastModifiedAt): void
     {
-        $this->lastModifiedAt = $lastModifiedAt;
+        $this->lastModifiedAt = DateTimeImmutable::createFromInterface(object: $lastModifiedAt);
     }
 }

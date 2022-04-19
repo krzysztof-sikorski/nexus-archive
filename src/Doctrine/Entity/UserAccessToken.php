@@ -50,14 +50,14 @@ class UserAccessToken implements UuidPrimaryKeyInterface, DatedEntityInterface, 
         $this->value = $value;
     }
 
-    public function getValidUntil(): ?DateTimeImmutable
+    public function getValidUntil(): ?DateTimeInterface
     {
         return $this->validUntil;
     }
 
-    public function setValidUntil(?DateTimeImmutable $validUntil): void
+    public function setValidUntil(?DateTimeInterface $validUntil): void
     {
-        $this->validUntil = $validUntil;
+        $this->validUntil = DateTimeImmutable::createFromInterface(object: $validUntil);
     }
 
     public function getOwner(): ?User

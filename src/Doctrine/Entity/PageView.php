@@ -83,24 +83,24 @@ class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSer
         $this->owner = $owner;
     }
 
-    public function getRequestStartedAt(): ?DateTimeImmutable
+    public function getRequestStartedAt(): ?DateTimeInterface
     {
         return $this->requestStartedAt;
     }
 
-    public function setRequestStartedAt(?DateTimeImmutable $requestStartedAt): void
+    public function setRequestStartedAt(?DateTimeInterface $requestStartedAt): void
     {
-        $this->requestStartedAt = $requestStartedAt;
+        $this->requestStartedAt = DateTimeImmutable::createFromInterface(object: $requestStartedAt);
     }
 
-    public function getResponseCompletedAt(): ?DateTimeImmutable
+    public function getResponseCompletedAt(): ?DateTimeInterface
     {
         return $this->responseCompletedAt;
     }
 
-    public function setResponseCompletedAt(?DateTimeImmutable $responseCompletedAt): void
+    public function setResponseCompletedAt(?DateTimeInterface $responseCompletedAt): void
     {
-        $this->responseCompletedAt = $responseCompletedAt;
+        $this->responseCompletedAt = DateTimeImmutable::createFromInterface(object: $responseCompletedAt);
     }
 
     public function getMethod(): ?string
@@ -149,14 +149,14 @@ class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSer
         $this->responseBody = $responseBody;
     }
 
-    public function getParsedAt(): ?DateTimeImmutable
+    public function getParsedAt(): ?DateTimeInterface
     {
         return $this->parsedAt;
     }
 
-    public function setParsedAt(?DateTimeImmutable $parsedAt): void
+    public function setParsedAt(?DateTimeInterface $parsedAt): void
     {
-        $this->parsedAt = $parsedAt;
+        $this->parsedAt = DateTimeImmutable::createFromInterface(object: $parsedAt);
     }
 
     public function getParserErrors(): ?array
