@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Contract\Config\AppParameters;
 use App\Contract\UserRoles;
-use App\Doctrine\Repository\UserRepository;
+use App\Service\Repository\UserRepository;
 use App\Service\UserManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

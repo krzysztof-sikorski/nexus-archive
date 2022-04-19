@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Doctrine\Entity\User;
-use App\Doctrine\Repository\UserRepository;
+use App\Service\Repository\UserRepository;
 use App\Service\UserAccessTokenManager;
 use DateInterval;
 use Exception;

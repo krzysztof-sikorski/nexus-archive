@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Doctrine\Entity\Nexus;
 
 use App\Contract\Entity\Nexus\GamePeriodInterface;
-use App\Doctrine\Repository\Nexus\GamePeriodRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
-    ORM\Entity(repositoryClass: GamePeriodRepository::class),
+    ORM\Entity(),
     ORM\Table(name: 'nexus_game_period'),
 ]
 class GamePeriod implements GamePeriodInterface

@@ -7,11 +7,10 @@ namespace App\Doctrine\Entity\Nexus;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Contract\Entity\LeaderboardTypes;
 use App\Doctrine\Entity\UuidPrimaryKeyTrait;
-use App\Doctrine\Repository\Nexus\LeaderboardCategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
-    ORM\Entity(repositoryClass: LeaderboardCategoryRepository::class),
+    ORM\Entity(),
     ORM\Table(name: 'nexus_leaderboard_category'),
     ORM\UniqueConstraint(name: 'nexus_leaderboard_category_uniq', fields: ['name', 'career']),
 ]

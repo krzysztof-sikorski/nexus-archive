@@ -13,12 +13,6 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 use function get_class;
 
-/**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 final class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
@@ -40,26 +34,5 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         $user->setPassword(password: $newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
-    }
-
-    public function findByUsername(string $username): ?User
-    {
-        $queryBuilder = $this->createQueryBuilder(alias: 'u')
-            ->andWhere('u.username = :username')
-            ->setParameter(key: 'username', value: $username);
-
-        $query = $queryBuilder->getQuery();
-
-        return $query->getOneOrNullResult();
-    }
-
-    public function getTotalCount(): int
-    {
-        $queryBuilder = $this->createQueryBuilder(alias: 'u')
-            ->select(select: 'COUNT(u)');
-
-        $query = $queryBuilder->getQuery();
-
-        return $query->getSingleScalarResult();
     }
 }

@@ -10,11 +10,10 @@ use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Contract\Entity\Nexus\GamePeriodInterface;
 use App\Doctrine\Entity\DatedEntityTrait;
 use App\Doctrine\Entity\UuidPrimaryKeyTrait;
-use App\Doctrine\Repository\Nexus\LeaderboardRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
-    ORM\Entity(repositoryClass: LeaderboardRepository::class),
+    ORM\Entity(),
     ORM\Table(name: 'nexus_leaderboard'),
     ORM\UniqueConstraint(name: 'nexus_leaderboard_uniq', fields: ['category', 'gamePeriod']),
     ORM\Index(fields: ['category'], name: 'nexus_leaderboard_category_idx'),

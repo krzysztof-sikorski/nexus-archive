@@ -6,7 +6,6 @@ namespace App\Doctrine\Entity;
 
 use App\Contract\Doctrine\Entity\DatedEntityInterface;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
-use App\Doctrine\Repository\UserAccessTokenRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -14,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 #[
-    ORM\Entity(repositoryClass: UserAccessTokenRepository::class),
+    ORM\Entity(),
     ORM\Table(name: 'user_access_token'),
     ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
     ORM\Index(fields: ['owner'], name: 'user_access_token_owner_idx'),

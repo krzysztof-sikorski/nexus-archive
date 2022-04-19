@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Entity\Nexus;
 
-use App\Doctrine\Repository\Nexus\LeaderboardEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
-    ORM\Entity(repositoryClass: LeaderboardEntryRepository::class),
+    ORM\Entity(),
     ORM\Table(name: 'nexus_leaderboard_entry'),
     ORM\Index(fields: ['leaderboard'], name: 'nexus_leaderboard_entry_leaderboard_idx'),
 ]

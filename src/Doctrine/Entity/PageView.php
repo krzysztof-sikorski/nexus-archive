@@ -6,7 +6,6 @@ namespace App\Doctrine\Entity;
 
 use App\Contract\Doctrine\Entity\DatedEntityInterface;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
-use App\Doctrine\Repository\PageViewRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -14,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 #[
-    ORM\Entity(repositoryClass: PageViewRepository::class),
+    ORM\Entity(),
     ORM\Table(name: 'page_view'),
     ORM\Index(columns: ['created_at', 'request_started_at', 'id'], name: 'page_view_sorting_idx'),
     ORM\Index(columns: ['owner_id'], name: 'page_view_owner_idx'),
