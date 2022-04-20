@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Contract\Config\AppParameters;
+use App\Contract\Config\AppSerializationGroups;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,9 +39,12 @@ abstract class BaseCommand extends Command
         mixed $value,
         ?string $serializationGroup = null
     ): void {
-        $context = AppParameters::SERIALIZER_DEFAULT_CONTEXT;
+        $context = [];
         if (null !== $serializationGroup) {
-            $context[ObjectNormalizer::GROUPS][] = $serializationGroup;
+            $context[ObjectNormalizer::GROUPS] = [
+                AppSerializationGroups::DEFAULT,
+                $serializationGroup,
+            ];
         }
         $serializedValue = $this->serializer->serialize(data: $value, format: JsonEncoder::FORMAT, context: $context);
         $io->info(message: sprintf('%s: %s', $label, $serializedValue));

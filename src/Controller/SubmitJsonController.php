@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Contract\Config\AppParameters;
 use App\Contract\Config\AppRoutes;
 use App\DTO\NexusRawDataSubmissionResult;
 use App\Service\NexusRawDataManager;
@@ -71,11 +70,7 @@ final class SubmitJsonController
 
     private function createJsonResponse(mixed $data, int $status): Response
     {
-        $serializedData = $this->serializer->serialize(
-            data: $data,
-            format: JsonEncoder::FORMAT,
-            context: AppParameters::SERIALIZER_DEFAULT_CONTEXT,
-        );
+        $serializedData = $this->serializer->serialize(data: $data, format: JsonEncoder::FORMAT);
         return new JsonResponse(data: $serializedData, status: $status, json: true);
     }
 }

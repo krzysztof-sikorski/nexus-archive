@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Contract\Config\AppParameters;
+use App\Service\Serializer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Serializer\SerializerInterface;
 
 return static function (ContainerConfigurator $containerConfigurator) {
     $containerConfigurator->import(
@@ -41,4 +43,6 @@ return static function (ContainerConfigurator $containerConfigurator) {
         resource: __DIR__ . '/../src/Controller/',
     );
     $prototypeConfigurator->tag(name: 'controller.service_arguments');
+
+    $servicesConfigurator->set(id: Serializer::class)->decorate(id: SerializerInterface::class);
 };
