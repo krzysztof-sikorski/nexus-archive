@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Contract\Config\AppRoutes;
-use App\DTO\NexusRawDataSubmissionResult;
-use App\Service\NexusRawDataManager;
-use App\Service\NexusRawDataValidator;
-use JsonException;
+use App\Contract\PageViewSubmissionResultStatus;
+use App\Service\PageViewSubmissionHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,16 +15,11 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Twig\Environment;
 
-use function json_decode;
-
-use const JSON_THROW_ON_ERROR;
-
 final class SubmitJsonController
 {
     public function __construct(
         private Environment $twigEnvironment,
-        private NexusRawDataValidator $validator,
-        private NexusRawDataManager $nexusRawDataManager,
+        private PageViewSubmissionHandler $pageViewSubmissionHandler,
         private SerializerInterface $serializer,
     ) {
     }
@@ -39,33 +32,23 @@ final class SubmitJsonController
             $userAccessTokenValue = $request->request->get(key: 'userAccessToken');
             $jsonData = $request->request->get(key: 'jsonData');
 
-            try {
-                $decodedJsonData = json_decode(json: $jsonData, flags: JSON_THROW_ON_ERROR);
-            } catch (JsonException $e) {
-                $responseData = new NexusRawDataSubmissionResult(
-                    isValid: false,
-                    errorSource: NexusRawDataSubmissionResult::ERROR_SOURCE_JSON_DECODE,
-                    errors: [$e->getMessage()]
-                );
-                return $this->createJsonResponse(data: $responseData, status: Response::HTTP_BAD_REQUEST);
-            }
-
-            $validationResult = $this->validator->validate(decodedJsonData: $decodedJsonData);
-            if (false === $validationResult->isValid()) {
-                return $this->createJsonResponse(data: $validationResult, status: Response::HTTP_BAD_REQUEST);
-            }
-
-            $submissionResult = $this->nexusRawDataManager->handleSubmission(
+            $submissionResult = $this->pageViewSubmissionHandler->handle(
                 userAccessTokenValue: $userAccessTokenValue,
-                decodedJsonData: $decodedJsonData
+                jsonData: $jsonData,
             );
 
-            return $this->createJsonResponse(data: $submissionResult, status: Response::HTTP_CREATED);
+            $responseStatus = match ($submissionResult->getStatus()) {
+                PageViewSubmissionResultStatus::SUCCESS => Response::HTTP_CREATED,
+                PageViewSubmissionResultStatus::ERROR_ACCESS_TOKEN => Response::HTTP_UNAUTHORIZED,
+                default => Response::HTTP_BAD_REQUEST,
+            };
+
+            return $this->createJsonResponse(data: $submissionResult, status: $responseStatus);
         }
 
         $content = $this->twigEnvironment->render(name: 'submit-json/index.html.twig');
 
-        return new Response($content);
+        return new Response(content: $content);
     }
 
     private function createJsonResponse(mixed $data, int $status): Response

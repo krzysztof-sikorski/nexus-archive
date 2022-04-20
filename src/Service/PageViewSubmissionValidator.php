@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\DTO\NexusRawDataSubmissionResult;
+use App\DTO\PageViewSubmissionValidatorResult;
 use App\Kernel;
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Validator;
 
-final class NexusRawDataValidator
+/**
+ * Facade for validator from "Opis JSON Schema" package
+ */
+final class PageViewSubmissionValidator
 {
     private const SCHEMA_ID = 'https://nexus-archive.zerozero.pl/submit-json';
     private Validator $validator;
@@ -27,21 +30,17 @@ final class NexusRawDataValidator
 
     private function getSchemaPath(): string
     {
-        return $this->kernel->getProjectDir() . '/assets/NexusRawDataJsonSchema.json';
+        return $this->kernel->getProjectDir() . '/assets/PageViewSubmissionJsonSchema.json';
     }
 
-    public function validate(mixed $decodedJsonData): NexusRawDataSubmissionResult
+    public function validate(mixed $decodedJsonData): PageViewSubmissionValidatorResult
     {
         $validationResult = $this->validator->validate(data: $decodedJsonData, schema: self::SCHEMA_ID);
         if ($validationResult->isValid()) {
-            return new NexusRawDataSubmissionResult(isValid: true, errorSource: null, errors: null);
+            return new PageViewSubmissionValidatorResult(isValid: true, errors: null);
         }
 
         $errors = $this->errorFormatter->format(error: $validationResult->error(), multiple: true);
-        return new NexusRawDataSubmissionResult(
-            isValid: false,
-            errorSource: NexusRawDataSubmissionResult::ERROR_SOURCE_JSON_SCHEMA,
-            errors: $errors
-        );
+        return new PageViewSubmissionValidatorResult(isValid: false, errors: $errors);
     }
 }
