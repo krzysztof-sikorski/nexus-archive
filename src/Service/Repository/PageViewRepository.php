@@ -25,6 +25,17 @@ final class PageViewRepository
         $this->entityManager->flush();
     }
 
+    public function prune(): void
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->delete(delete: PageView::class, alias: 'pv')
+            ->where(predicates: 'pv.parsedAt IS NOT NULL AND pv.parserErrors IS NULL');
+
+        $query = $queryBuilder->getQuery();
+
+        $query->execute();
+    }
+
     public function getTotalCount(): int
     {
         $queryBuilder = $this->entityManager->createQueryBuilder()

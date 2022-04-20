@@ -40,8 +40,15 @@ final class UserAccessTokenRepository
 
     public function prune(): void
     {
-        $dql = 'DELETE FROM App:UserAccessToken AS t WHERE t.validUntil < current_timestamp()';
-        $query = $this->entityManager->createQuery(dql: $dql);
+        $currentDateTime = $this->clock->getCurrentDateTime();
+
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->delete(delete: UserAccessToken::class, alias: 'uat')
+            ->where(predicates: 'uat.validUntil < :currentDateTime')
+            ->setParameter(key: 'currentDateTime', value: $currentDateTime);
+
+        $query = $queryBuilder->getQuery();
+
         $query->execute();
     }
 
