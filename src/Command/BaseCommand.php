@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Contract\Config\AppParameters;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 use function sprintf;
@@ -31,9 +33,17 @@ abstract class BaseCommand extends Command
         return $this->getHelper(name: 'question');
     }
 
-    protected function displayValue(SymfonyStyle $io, string $label, mixed $value): void
-    {
-        $serializedValue = $this->serializer->serialize(data: $value, format: JsonEncoder::FORMAT);
+    protected function displayValue(
+        SymfonyStyle $io,
+        string $label,
+        mixed $value,
+        ?string $serializationGroup = null
+    ): void {
+        $context = AppParameters::SERIALIZER_DEFAULT_CONTEXT;
+        if (null !== $serializationGroup) {
+            $context[ObjectNormalizer::GROUPS][] = $serializationGroup;
+        }
+        $serializedValue = $this->serializer->serialize(data: $value, format: JsonEncoder::FORMAT, context: $context);
         $io->info(message: sprintf('%s: %s', $label, $serializedValue));
     }
 }

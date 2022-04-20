@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Contract\Config\AppParameters;
 use App\Contract\Config\AppRoutes;
 use App\DTO\NexusRawDataSubmissionResult;
 use App\Service\NexusRawDataManager;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
 use Twig\Environment;
 
 use function json_decode;
@@ -25,6 +28,7 @@ final class SubmitJsonController
         private Environment $twigEnvironment,
         private NexusRawDataValidator $validator,
         private NexusRawDataManager $nexusRawDataManager,
+        private SerializerInterface $serializer,
     ) {
     }
 
@@ -44,12 +48,12 @@ final class SubmitJsonController
                     errorSource: NexusRawDataSubmissionResult::ERROR_SOURCE_JSON_DECODE,
                     errors: [$e->getMessage()]
                 );
-                return new JsonResponse(data: $responseData, status: Response::HTTP_BAD_REQUEST);
+                return $this->createJsonResponse(data: $responseData, status: Response::HTTP_BAD_REQUEST);
             }
 
             $validationResult = $this->validator->validate(decodedJsonData: $decodedJsonData);
             if (false === $validationResult->isValid()) {
-                return new JsonResponse(data: $validationResult, status: Response::HTTP_BAD_REQUEST);
+                return $this->createJsonResponse(data: $validationResult, status: Response::HTTP_BAD_REQUEST);
             }
 
             $submissionResult = $this->nexusRawDataManager->handleSubmission(
@@ -57,11 +61,21 @@ final class SubmitJsonController
                 decodedJsonData: $decodedJsonData
             );
 
-            return new JsonResponse(data: $submissionResult, status: Response::HTTP_CREATED);
+            return $this->createJsonResponse(data: $submissionResult, status: Response::HTTP_CREATED);
         }
 
         $content = $this->twigEnvironment->render(name: 'submit-json/index.html.twig');
 
         return new Response($content);
+    }
+
+    private function createJsonResponse(mixed $data, int $status): Response
+    {
+        $serializedData = $this->serializer->serialize(
+            data: $data,
+            format: JsonEncoder::FORMAT,
+            context: AppParameters::SERIALIZER_DEFAULT_CONTEXT,
+        );
+        return new JsonResponse(data: $serializedData, status: $status, json: true);
     }
 }

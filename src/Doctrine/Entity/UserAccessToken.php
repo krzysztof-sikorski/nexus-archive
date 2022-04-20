@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Entity;
 
+use App\Contract\Config\AppSerializationGroups;
 use App\Contract\Doctrine\Entity\DatedEntityInterface;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[
     ORM\Entity(),
@@ -18,12 +20,16 @@ use JsonSerializable;
     ORM\UniqueConstraint(name: 'value_uniq', fields: ['value']),
     ORM\Index(fields: ['owner'], name: 'user_access_token_owner_idx'),
 ]
-class UserAccessToken implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSerializable
+class UserAccessToken implements UuidPrimaryKeyInterface, DatedEntityInterface
 {
     use UuidPrimaryKeyTrait;
     use DatedEntityTrait;
 
-    #[ORM\Column(name: 'value', type: Types::TEXT, unique: true, nullable: false)]
+    #[
+        ORM\Column(name: 'value', type: Types::TEXT, unique: true, nullable: false),
+        Groups(groups: [AppSerializationGroups::ENTITY_USER_ACCESS_TOKEN]),
+        SerializedName(serializedName: 'value'),
+    ]
     private ?string $value = null;
 
     #[ORM\Column(name: 'valid_until', type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
@@ -32,6 +38,8 @@ class UserAccessToken implements UuidPrimaryKeyInterface, DatedEntityInterface, 
     #[
         ORM\ManyToOne(targetEntity: User::class),
         ORM\JoinColumn(name: 'owner_id', referencedColumnName: 'id', nullable: false),
+        Groups(groups: [AppSerializationGroups::ENTITY_USER_ACCESS_TOKEN]),
+        SerializedName(serializedName: 'owner'),
     ]
     private ?User $owner = null;
 
@@ -70,14 +78,14 @@ class UserAccessToken implements UuidPrimaryKeyInterface, DatedEntityInterface, 
         $this->owner = $owner;
     }
 
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'value' => $this->getValue(),
-            'createdAt' => $this->getCreatedAt()?->format(format: DateTimeInterface::ISO8601),
-            'validUntil' => $this->getValidUntil()?->format(format: DateTimeInterface::ISO8601),
-            'owner_id' => $this->getOwner()?->getId(),
-        ];
-    }
+//    public function jsonSerialize(): array
+//    {
+//        return [
+//            'id' => $this->getId(),
+//            'value' => $this->getValue(),
+//            'createdAt' => $this->getCreatedAt()?->format(format: DateTimeInterface::ISO8601),
+//            'validUntil' => $this->getValidUntil()?->format(format: DateTimeInterface::ISO8601),
+//            'owner_id' => $this->getOwner()?->getId(),
+//        ];
+//    }
 }

@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Doctrine\Entity;
 
 use App\Contract\Config\AppParameters;
+use App\Contract\Config\AppSerializationGroups;
 use App\Contract\Doctrine\Entity\DatedEntityInterface;
 use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Doctrine\Repository\UserRepository;
-use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[
     ORM\Entity(repositoryClass: UserRepository::class),
@@ -22,23 +23,35 @@ use Symfony\Component\Security\Core\User\UserInterface;
 ]
 class User
     implements UuidPrimaryKeyInterface, DatedEntityInterface,
-               UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+               UserInterface, PasswordAuthenticatedUserInterface
 {
     use UuidPrimaryKeyTrait;
     use DatedEntityTrait;
 
     public const USERNAME_MAX_LENGTH = 180;
 
-    #[ORM\Column(name: 'username', type: Types::STRING, length: self::USERNAME_MAX_LENGTH, nullable: false)]
+    #[
+        ORM\Column(name: 'username', type: Types::STRING, length: self::USERNAME_MAX_LENGTH, nullable: false),
+        Groups(groups: [AppSerializationGroups::ENTITY_USER]),
+        SerializedName(serializedName: 'username'),
+    ]
     private ?string $username = null;
 
-    #[ORM\Column(name: 'roles', type: Types::JSON, nullable: false)]
+    #[
+        ORM\Column(name: 'roles', type: Types::JSON, nullable: false),
+        Groups(groups: [AppSerializationGroups::ENTITY_USER]),
+        SerializedName(serializedName: 'roles'),
+    ]
     private array $roles = [];
 
     #[ORM\Column(name: 'password', type: Types::STRING, nullable: false)]
     private ?string $password = null;
 
-    #[ORM\Column(name: 'enabled', type: Types::BOOLEAN, nullable: false)]
+    #[
+        ORM\Column(name: 'enabled', type: Types::BOOLEAN, nullable: false),
+        Groups(groups: [AppSerializationGroups::ENTITY_USER]),
+        SerializedName(serializedName: 'id'),
+    ]
     private bool $enabled = false;
 
     public function __construct()
@@ -135,16 +148,5 @@ class User
     public function setEnabled(bool $enabled): void
     {
         $this->enabled = $enabled;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'createdAt' => $this->getCreatedAt()?->format(format: DateTimeInterface::ISO8601),
-            'userIdentifier' => $this->getUserIdentifier(),
-            'roles' => $this->getRoles(),
-            'enabled' => $this->isEnabled(),
-        ];
     }
 }

@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace App\Contract\Config;
 
 use App\Contract\UserRoles;
+use DateTimeInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
+use const JSON_PRETTY_PRINT;
 
 final class AppParameters
 {
@@ -15,6 +21,11 @@ final class AppParameters
 
     // framework parameters
     public const DEFAULT_LOCALE = 'en';
+    public const SERIALIZER_DEFAULT_CONTEXT = [
+        ObjectNormalizer::GROUPS => [AppSerializationGroups::DEFAULT],
+        DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ISO8601,
+        JsonEncode::OPTIONS => JSON_PRETTY_PRINT,
+    ];
 
     // security parameters
     public const SECURITY_USER_PROVIDER_NAME = 'app_user_provider';

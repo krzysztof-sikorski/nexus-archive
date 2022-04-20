@@ -10,7 +10,6 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 
 #[
     ORM\Entity(),
@@ -18,7 +17,7 @@ use JsonSerializable;
     ORM\Index(columns: ['created_at', 'request_started_at', 'id'], name: 'page_view_sorting_idx'),
     ORM\Index(columns: ['owner_id'], name: 'page_view_owner_idx'),
 ]
-class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSerializable
+class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface
 {
     use UuidPrimaryKeyTrait;
     use DatedEntityTrait;
@@ -56,21 +55,6 @@ class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface, JsonSer
     public function __construct()
     {
         $this->generateId();
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'createdAt' => $this->getCreatedAt()?->format(DateTimeInterface::ISO8601),
-            'ownerId' => $this->getOwner()?->getId(),
-            'requestStartedAt' => $this->getRequestStartedAt()?->format(DateTimeInterface::ISO8601),
-            'responseCompletedAt' => $this->getResponseCompletedAt()?->format(DateTimeInterface::ISO8601),
-            'method' => $this->getMethod(),
-            'url' => $this->getUrl(),
-            'formData' => $this->getFormData(),
-            'responseBody' => $this->getResponseBody(),
-        ];
     }
 
     public function getOwner(): ?User

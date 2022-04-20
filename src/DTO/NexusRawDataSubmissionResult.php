@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
-use JsonSerializable;
+use App\Contract\Config\AppSerializationGroups;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
-final class NexusRawDataSubmissionResult implements JsonSerializable
+final class NexusRawDataSubmissionResult
 {
     public const ERROR_SOURCE_JSON_DECODE = 'json-decode';
     public const ERROR_SOURCE_JSON_SCHEMA = 'json-schema';
@@ -19,25 +21,28 @@ final class NexusRawDataSubmissionResult implements JsonSerializable
     ) {
     }
 
-    public function jsonSerialize(): array
-    {
-        return [
-            'isValid' => $this->isValid(),
-            'errorSource' => $this->getErrorSource(),
-            'errors' => $this->getErrors(),
-        ];
-    }
-
+    #[
+        Groups(groups: [AppSerializationGroups::DEFAULT]),
+        SerializedName(serializedName: 'isValid'),
+    ]
     public function isValid(): bool
     {
         return $this->isValid;
     }
 
+    #[
+        Groups(groups: [AppSerializationGroups::DEFAULT]),
+        SerializedName(serializedName: 'errorSource'),
+    ]
     public function getErrorSource(): ?string
     {
         return $this->errorSource;
     }
 
+    #[
+        Groups(groups: [AppSerializationGroups::DEFAULT]),
+        SerializedName(serializedName: 'errors'),
+    ]
     public function getErrors(): ?array
     {
         return $this->errors;

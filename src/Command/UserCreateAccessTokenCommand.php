@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Contract\Config\AppSerializationGroups;
 use App\Doctrine\Entity\User;
 use App\Service\Repository\UserAccessTokenRepository;
 use App\Service\Repository\UserRepository;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
 use function sprintf;
@@ -109,13 +111,18 @@ final class UserCreateAccessTokenCommand extends BaseCommand
 
         $this->displayValue(io: $io, label: 'Selected owner', value: $this->owner);
 
-        $parsedDuration = $this->serializer->serialize($this->duration, 'json');
+        $parsedDuration = $this->serializer->serialize(data: $this->duration, format: JsonEncoder::FORMAT);
         $message = sprintf('Selected duration: %s (parsed as: %s)', $this->durationStr, $parsedDuration);
         $io->info(message: $message);
 
         $token = $this->userAccessTokenRepository->create(owner: $this->owner, duration: $this->duration);
 
-        $this->displayValue(io: $io, label: 'Created token', value: $token);
+        $this->displayValue(
+            io: $io,
+            label: 'Created token',
+            value: $token,
+            serializationGroup: AppSerializationGroups::ENTITY_USER_ACCESS_TOKEN
+        );
 
         return Command::SUCCESS;
     }
