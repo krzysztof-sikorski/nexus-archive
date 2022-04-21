@@ -60,4 +60,28 @@ final class PageViewRepository
 
         return $query->getSingleScalarResult();
     }
+
+    public function getUnparsed(int $batchSize): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->select(select: 'pv')
+            ->from(from: PageView::class, alias: 'pv')
+            ->where(predicates: 'pv.parsedAt IS NULL')
+            ->orderBy(sort: 'pv.createdAt', order: 'ASC')
+            ->addOrderBy(sort: 'pv.requestStartedAt', order: 'ASC')
+            ->addOrderBy(sort: 'pv.id', order: 'ASC')
+            ->setMaxResults(maxResults: $batchSize);
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function saveAsParsed(PageView $pageView, DateTimeInterface $parsedAt, ?array $errors): void
+    {
+        $pageView->setParsedAt(parsedAt: $parsedAt);
+        $pageView->setParserErrors(parserErrors: $errors);
+        $this->entityManager->persist($pageView);
+        $this->entityManager->flush();
+    }
 }
