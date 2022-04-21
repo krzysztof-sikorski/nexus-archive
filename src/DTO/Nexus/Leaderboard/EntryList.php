@@ -6,64 +6,75 @@ namespace App\DTO\Nexus\Leaderboard;
 
 use App\Contract\Entity\Nexus\Leaderboard\EntryInterface;
 use App\Contract\Entity\Nexus\Leaderboard\EntryListInterface;
-
 use InvalidArgumentException;
 
 use function array_key_exists;
+use function array_keys;
 use function count;
 use function is_int;
 
-class EntryList implements EntryListInterface
+final class EntryList implements EntryListInterface
 {
-    private ?int $currentPosition = null;
-    private array $entries = [];
+    /** @var int current position of iterator cursor */
+    private int $iteratorCursor = 0;
+
+    /** @var array array of filled positions */
+    private array $positionList = [];
+
+    /** @var array<int, EntryInterface> position=>entry mapping */
+    private array $entryDict = [];
 
     public function current(): ?EntryInterface
     {
-        if ($this->valid()) {
-            return $this->entries[$this->currentPosition];
-        }
-        return null;
+        $position = $this->key();
+        return $this->offsetGet(offset: $position);
     }
 
     public function key(): ?int
     {
-        return $this->currentPosition;
+        if ($this->valid()) {
+            return $position = $this->positionList[$this->iteratorCursor];
+        }
+        return null;
     }
 
     public function next(): void
     {
-        ++$this->currentPosition;
+        ++$this->iteratorCursor;
     }
 
     public function rewind(): void
     {
-        if (count($this->entries) > 0) {
-            $this->currentPosition = 0;
-        } else {
-            $this->currentPosition = null;
-        }
+        $this->positionList = array_keys(array: $this->entryDict);
+        $this->iteratorCursor = 0;
     }
 
     public function valid(): bool
     {
-        return array_key_exists(key: $this->currentPosition, array: $this->entries);
+        if (array_key_exists(key: $this->iteratorCursor, array: $this->positionList)) {
+            $position = $this->positionList[$this->iteratorCursor];
+            return $this->offsetExists(offset: $position);
+        }
+        return false;
     }
 
     public function count(): int
     {
-        return count($this->entries);
+        return count($this->entryDict);
     }
 
     public function offsetExists(mixed $offset): bool
     {
-        return array_key_exists(key: $offset, array: $this->entries);
+        if (false === is_int($offset)) {
+            return false; // unsupported offset type
+        }
+        return array_key_exists(key: $offset, array: $this->entryDict);
     }
 
     public function offsetGet(mixed $offset): ?EntryInterface
     {
-        if (array_key_exists(key: $offset, array: $this->entries)) {
-            return $this->entries[$offset];
+        if ($this->offsetExists(offset: $offset)) {
+            return $this->entryDict[$offset];
         }
         return null;
     }
@@ -74,15 +85,15 @@ class EntryList implements EntryListInterface
             throw new InvalidArgumentException(message: 'Offset is not an integer');
         }
         if (false === $value instanceof EntryInterface) {
-            throw new InvalidArgumentException(message: 'Value is not an EntryInterface');
+            throw new InvalidArgumentException(message: 'Value is not an instance of EntryInterface');
         }
-        $this->entries[$offset] = $value;
+        $this->entryDict[$offset] = $value;
     }
 
     public function offsetUnset(mixed $offset): void
     {
-        if (array_key_exists(key: $offset, array: $this->entries)) {
-            unset($this->entries[$offset]);
+        if ($this->offsetExists(offset: $offset)) {
+            unset($this->entryDict[$offset]);
         }
     }
 }
