@@ -18,7 +18,7 @@ class Leaderboard implements LeaderboardInterface
     private EntryListInterface $entries;
 
     public function __construct(
-        private ?string $title = null,
+        private ?string $name = null,
         private ?string $type = null,
         private ?string $scoreLabel = null,
     ) {
@@ -27,12 +27,12 @@ class Leaderboard implements LeaderboardInterface
 
     public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
     public function setName(string $name): void
     {
-        $this->title = $name;
+        $this->name = $name;
     }
 
     public function getType(): ?string

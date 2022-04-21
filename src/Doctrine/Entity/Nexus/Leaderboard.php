@@ -13,7 +13,7 @@ use App\Doctrine\Entity\UuidPrimaryKeyTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
-    ORM\Entity(),
+    ORM\Entity,
     ORM\Table(name: 'nexus_leaderboard'),
     ORM\UniqueConstraint(name: 'nexus_leaderboard_uniq', fields: ['category', 'gamePeriod']),
     ORM\Index(fields: ['category'], name: 'nexus_leaderboard_category_idx'),
