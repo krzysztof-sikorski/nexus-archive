@@ -10,6 +10,7 @@ use App\Contract\Service\Parser\ParserSelectorInterface;
 use App\Doctrine\Entity\PageView;
 use App\DTO\ParserResult;
 use App\Service\Repository\PageViewRepository;
+use Throwable;
 
 final class PageViewProcessor
 {
@@ -30,10 +31,15 @@ final class PageViewProcessor
             $parser = $this->parserSelector->findParser($pageView);
 
             if (null !== $parser) {
-                $parserResult = $parser->parse(pageView: $pageView);
+                try {
+                    $parserResult = $parser->parse(pageView: $pageView);
+                } catch (Throwable $exception) {
+                    $parserResult = new ParserResult();
+                    $parserResult->addError(error: $exception);
+                }
             } else {
                 $parserResult = new ParserResult();
-                $parserResult->setErrors(errors: ['Could not find parser that supports this page view']);
+                $parserResult->addError(error: 'Could not find parser that supports this page view');
             }
 
             if (false === $parserResult->hasErrors()) {

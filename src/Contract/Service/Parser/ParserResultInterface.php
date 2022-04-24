@@ -6,6 +6,7 @@ namespace App\Contract\Service\Parser;
 
 use App\Contract\Entity\Nexus\GamePeriodInterface;
 use App\Contract\Entity\Nexus\LeaderboardInterface;
+use Throwable;
 
 /**
  * Result of parsing raw data
@@ -15,6 +16,8 @@ interface ParserResultInterface
     public function hasErrors(): bool;
 
     public function getErrors(): ?array;
+
+    public function addError(string|Throwable $error): void;
 
     public function getGamePeriod(): ?GamePeriodInterface;
 

@@ -49,8 +49,8 @@ class PageView implements UuidPrimaryKeyInterface, DatedEntityInterface
     #[ORM\Column(name: 'parsed_at', type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $parsedAt = null;
 
-    #[ORM\Column(name: 'parser_errors', type: 'json', nullable: true)]
-    private mixed $parserErrors = null;
+    #[ORM\Column(name: 'parser_errors', type: Types::JSON, nullable: true)]
+    private ?array $parserErrors = null;
 
     public function __construct()
     {
