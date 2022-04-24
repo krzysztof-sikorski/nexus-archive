@@ -141,6 +141,9 @@
             "bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v6.0.3"
+    },
     "symfony/debug-bundle": {
         "version": "6.0",
         "recipe": {
@@ -161,6 +164,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v5.3.8"
+    },
+    "symfony/dom-crawler": {
+        "version": "v6.0.6"
     },
     "symfony/dotenv": {
         "version": "v5.3.8"
