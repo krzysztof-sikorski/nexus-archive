@@ -22,6 +22,11 @@ final class MainMenuService
                 'external' => false,
             ],
             [
+                'name' => 'Leaderboards',
+                'url' => $this->urlGenerator->generate(name: AppRoutes::LEADERBOARDS),
+                'external' => false,
+            ],
+            [
                 'name' => 'Submit data',
                 'url' => $this->urlGenerator->generate(name: AppRoutes::SUBMIT_JSON),
                 'external' => false,

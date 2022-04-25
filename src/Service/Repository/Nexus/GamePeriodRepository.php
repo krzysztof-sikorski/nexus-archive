@@ -26,4 +26,18 @@ final class GamePeriodRepository
 
         return $query->getOneOrNullResult();
     }
+
+    /**
+     * @return GamePeriod[]
+     */
+    public function findAll(): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->select(select: 'gp')
+            ->from(from: GamePeriod::class, alias: 'gp')
+            ->orderBy(sort: 'gp.id', order: 'ASC');
+        $query = $queryBuilder->getQuery();
+
+        return $query->getResult();
+    }
 }
