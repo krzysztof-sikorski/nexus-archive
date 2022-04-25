@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Contract\Config\AppRoutes;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-final class MainMenuService
+final class MainMenuGenerator
 {
     public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
