@@ -30,6 +30,7 @@ use function parse_str;
 use function parse_url;
 use function preg_match;
 use function sprintf;
+use function str_replace;
 use function substr;
 
 use const MB_CASE_LOWER;
@@ -236,7 +237,7 @@ final class BreathFourthParser implements ParserInterface
             $entryRows[] = [
                 'position' => intval(value: $matches['position']),
                 'characterName' => $matches['characterName'],
-                'score' => intval(value: $entryScoreStr),
+                'score' => $this->parseScoreString(value: $entryScoreStr),
             ];
         }
 
@@ -256,27 +257,8 @@ final class BreathFourthParser implements ParserInterface
         return $leaderboard;
     }
 
-    private function generateDummyLeaderboard(): LeaderboardInterface
+    private function parseScoreString(string $value): int
     {
-        $leaderboard = new Leaderboard();
-        $leaderboard->setName(name: 'Dummy leaderboard');
-        $leaderboard->setType(type: LeaderboardTypes::CAREER);
-        $leaderboard->setScoreLabel(scoreLabel: 'Dummy score');
-
-        $entries = $leaderboard->getEntries();
-
-        for ($position = 1; $position <= 10; $position++) {
-            $characterName = sprintf('Dummy #%d', $position);
-            $minScore = (10 - $position) * 100;
-            $score = mt_rand(min: $minScore, max: $minScore + 99);
-
-            $entry = new Entry();
-            $entry->setCharacterName(characterName: $characterName);
-            $entry->setScore(value: $score);
-
-            $entries[$position] = $entry;
-        }
-
-        return $leaderboard;
+        return intval(value: str_replace(search: [',', '.'], replace: '', subject: $value));
     }
 }
