@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\EasyAdmin\Controller;
 
-use App\Admin\Field\JsonField;
 use App\Doctrine\Entity\PageView;
+use App\EasyAdmin\Field\JsonField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;

@@ -6,6 +6,7 @@ use App\Contract\Config\AppParameters;
 use App\Contract\Config\AppRoutes;
 use App\Contract\UserRoles;
 use App\Doctrine\Entity\User;
+use App\EasyAdmin\Controller\DashboardController;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Config\SecurityConfig;
@@ -45,7 +46,7 @@ return static function (SecurityConfig $securityConfig, ContainerConfigurator $c
     $firewallConfig->logout()->path(value: AppRoutes::LOGOUT);
 
     $accessControlConfig = $securityConfig->accessControl();
-    $accessControlConfig->path(value: '^/admin');
+    $accessControlConfig->path(value: DashboardController::ROUTE_SECURITY_REGEXP);
     $accessControlConfig->roles(value: [UserRoles::ROLE_ADMIN]);
 
     if ('test' === $containerConfigurator->env()) {

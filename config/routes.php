@@ -14,6 +14,11 @@ return static function (RoutingConfigurator $routingConfigurator) {
     );
 
     $routingConfigurator->import(
+        resource: __DIR__ . '/../src/EasyAdmin/Controller/',
+        type: AppParameters::CONFIGURATOR_IMPORT_TYPE_ANNOTATION,
+    );
+
+    $routingConfigurator->import(
         resource: __DIR__ . '/../src/Kernel.php',
         type: AppParameters::CONFIGURATOR_IMPORT_TYPE_ANNOTATION,
     );

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\EasyAdmin\Controller;
 
 use App\Contract\Config\AppRoutes;
 use App\Doctrine\Entity\PageView;
@@ -24,6 +24,9 @@ use Twig\Environment;
 
 final class DashboardController extends AbstractDashboardController
 {
+    public const ROUTE_PATH = '/easyadmin';
+    public const ROUTE_SECURITY_REGEXP = '^/easyadmin';
+
     public function __construct(
         private Environment $twigEnvironment,
         private UserRepository $userRepository,
@@ -32,7 +35,7 @@ final class DashboardController extends AbstractDashboardController
     ) {
     }
 
-    #[Route('/admin', name: AppRoutes::ADMIN)]
+    #[Route(self::ROUTE_PATH, name: AppRoutes::EASYADMIN)]
     public function index(): Response
     {
         $userTotalCount = $this->userRepository->getTotalCount();
@@ -55,7 +58,7 @@ final class DashboardController extends AbstractDashboardController
             'page_view_daily_count' => $dataDailyCount,
         ];
 
-        $content = $this->twigEnvironment->render(name: 'admin/dashboard/index.html.twig', context: $context);
+        $content = $this->twigEnvironment->render(name: 'easyadmin/dashboard/index.html.twig', context: $context);
 
         return new Response(content: $content);
     }

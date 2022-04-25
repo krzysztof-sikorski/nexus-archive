@@ -12,5 +12,5 @@ final class AppRoutes
     public const LOGIN = 'app_login';
     public const LOGOUT = 'app_logout';
     public const SUBMIT_JSON = 'app_submit_json';
-    public const ADMIN = 'app_admin';
+    public const EASYADMIN = 'app_easyadmin';
 }
