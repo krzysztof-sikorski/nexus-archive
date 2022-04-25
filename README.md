@@ -38,6 +38,12 @@ sudo apt-get install php-xml php-mbstring php-intl php-xml # required or recomme
 sudo apt-get install php-pgsql # required by application design
 ```
 
+Remember to also configure periodic execution of following console commands
+(e.g. via cron jobs or systemd timers):
+
+- `bin/console app:worker:parser` for parsing submitted data
+- `bin/console app:worker:prune-database` for pruning unwanted rows from db
+
 ## Development notes
 
 - some classes are loaded from `var\cache` directory, so you have to
