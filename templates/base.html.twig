@@ -10,10 +10,13 @@
 <header>
     <nav>
         <menu>
-            <li><a href="{{ path('app_home') }}">Home</a></li>
-            <li><a href="{{ path('app_submit_json') }}">Submit JSON</a></li>
-            <li><a href="https://www.nexusclash.com/" rel="external">Nexus Clash</a></li>
-            <li><a href="https://discord.gg/zBVwzD3f8v" rel="external">Discord</a></li>
+            {% for menuItem in mainMenu.getMenu() %}
+                {% if menuItem.external %}
+                    <li><a href="{{ menuItem.url }}" rel="external">{{ menuItem.name }}</a></li>
+                {% else %}
+                    <li><a href="{{ menuItem.url }}">{{ menuItem.name }}</a></li>
+                {% endif %}
+            {% endfor %}
         </menu>
     </nav>
 </header>
