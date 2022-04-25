@@ -17,7 +17,7 @@ class LeaderboardEntry
 {
     #[
         ORM\Id,
-        ORM\ManyToOne(targetEntity: Leaderboard::class),
+        ORM\ManyToOne(targetEntity: Leaderboard::class, inversedBy: 'entries'),
         ORM\JoinColumn(name: 'leaderboard_id', referencedColumnName: 'id', nullable: false),
     ]
     private ?Leaderboard $leaderboard = null;

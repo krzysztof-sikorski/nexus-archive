@@ -10,6 +10,8 @@ use App\Contract\Doctrine\Entity\UuidPrimaryKeyInterface;
 use App\Contract\Entity\Nexus\GamePeriodInterface;
 use App\Doctrine\Entity\DatedEntityTrait;
 use App\Doctrine\Entity\UuidPrimaryKeyTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[
@@ -34,11 +36,15 @@ class Leaderboard implements UuidPrimaryKeyInterface, GamePeriodReferenceInterfa
         ORM\ManyToOne(targetEntity: GamePeriod::class),
         ORM\JoinColumn(name: 'game_period_id', referencedColumnName: 'id', nullable: false),
     ]
-    protected ?GamePeriodInterface $gamePeriod = null;
+    private ?GamePeriodInterface $gamePeriod = null;
+
+    #[ORM\OneToMany(mappedBy: 'leaderboard', targetEntity: LeaderboardEntry::class)]
+    private Collection $entries;
 
     public function __construct()
     {
         $this->generateId();
+        $this->entries = new ArrayCollection();
     }
 
     public function getCategory(): ?LeaderboardCategory
@@ -59,5 +65,10 @@ class Leaderboard implements UuidPrimaryKeyInterface, GamePeriodReferenceInterfa
     public function setGamePeriod(GamePeriodInterface $gamePeriod): void
     {
         $this->gamePeriod = $gamePeriod;
+    }
+
+    public function getEntries(): Collection
+    {
+        return $this->entries;
     }
 }
