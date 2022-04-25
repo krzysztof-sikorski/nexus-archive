@@ -41,14 +41,15 @@ final class PageViewProcessor
 
         /** @var PageView $pageView */
         foreach ($records as $pageView) {
+            $idAsString = $pageView->getId()->toRfc4122();
             $this->logger->debug(
                 message: 'Started processing a page view',
-                context: ['id' => $pageView->getId(), 'createdAt' => $pageView->getCreatedAt()],
+                context: ['id' => $idAsString, 'createdAt' => $pageView->getCreatedAt()],
             );
             $parser = $this->parserSelector->findParser($pageView);
             $this->logger->debug(
                 message: 'Selected parser',
-                context: ['id' => $pageView->getId(), 'class' => null !== $parser ? get_class(object: $parser) : null],
+                context: ['id' => $idAsString, 'class' => null !== $parser ? get_class(object: $parser) : null],
             );
 
             if (null !== $parser) {
@@ -68,7 +69,7 @@ final class PageViewProcessor
             } else {
                 $this->logger->error(
                     message: 'Parsing has failed',
-                    context: ['id' => $pageView->getId(), 'errors' => $parserResult->getErrors()],
+                    context: ['id' => $idAsString, 'errors' => $parserResult->getErrors()],
                 );
             }
 
