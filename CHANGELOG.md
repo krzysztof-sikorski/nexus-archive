@@ -1,3 +1,13 @@
+# Version 1.0.0
+
+- create interfaces and classes to represent leaderboard table as seen in game
+- create Doctrine entities to persist these leaderboard tables in database
+- implement general parser infrastructure to handle stored page views
+- implement parser for Breath 4 final leaderboards
+- implement a public page for browsing leaderboards
+- create and apply basic UI theme/styling, based on Tailwind CSS
+- some more internal code cleanups
+
 # Version 0.5.0
 
 - fix crash in token command on empty username input
