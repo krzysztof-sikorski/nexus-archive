@@ -27,18 +27,18 @@ final class MainMenuGenerator
                 'external' => false,
             ],
             [
+                'name' => 'About website',
+                'url' => $this->urlGenerator->generate(name: AppRoutes::ABOUT),
+                'external' => false,
+            ],
+            [
                 'name' => 'Submit data',
                 'url' => $this->urlGenerator->generate(name: AppRoutes::SUBMIT_JSON),
                 'external' => false,
             ],
             [
-                'name' => 'Nexus Clash',
+                'name' => 'Back to Nexus Clash',
                 'url' => 'https://www.nexusclash.com/',
-                'external' => true,
-            ],
-            [
-                'name' => 'Discord',
-                'url' => 'https://discord.gg/zBVwzD3f8v',
                 'external' => true,
             ],
         ];

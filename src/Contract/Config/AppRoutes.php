@@ -11,6 +11,7 @@ final class AppRoutes
     public const HOME = 'app_home';
     public const FAVICON_ICO = 'app_favicon_ico';
     public const LEADERBOARDS = 'app_leaderboards';
+    public const ABOUT = 'app_about';
     public const SUBMIT_JSON = 'app_submit_json';
 
     // undocumented routes
