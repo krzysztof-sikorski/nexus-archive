@@ -32,11 +32,6 @@ final class MainMenuGenerator
                 'external' => false,
             ],
             [
-                'name' => 'Submit data',
-                'url' => $this->urlGenerator->generate(name: AppRoutes::SUBMIT_JSON),
-                'external' => false,
-            ],
-            [
                 'name' => 'Back to Nexus Clash',
                 'url' => 'https://www.nexusclash.com/',
                 'external' => true,
