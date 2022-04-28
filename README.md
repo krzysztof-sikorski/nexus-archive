@@ -7,7 +7,18 @@ The <q>Nexus Archive</q> website, based on Symfony framework.
 This project is licensed under [European Union Public Licence (EUPL)][EUPL].
 
 For convenience an English text of the licence is included
-in [LICENSE.txt](LICENSE.txt) file.
+in [LICENSE.txt](./LICENSE.txt) file.
+
+## Repositories
+
+Source code is primarily hosted
+on [my private Git server](https://git.zerozero.pl/nexus-archive), but for
+convenience and redundancy it is also mirrored to a few popular code hosting
+portals:
+
+- [Gitlab mirror](https://gitlab.com/krzysztof-sikorski/nexus-archive)
+- [GitHub mirror](https://github.com/krzysztof-sikorski/nexus-archive)
+- [Launchpad mirror](https://git.launchpad.net/nexus-archive)
 
 ## Installation and deployment
 
@@ -16,7 +27,7 @@ software stack of:
 
 - an http server (e.g. Nginx)
 - PHP binaries and some standard extensions (
-  see [composer.json file](composer.json) for details)
+  see [composer.json file](./composer.json) for details)
 - [Composer][Composer] tool (for fetching and installing third-party PHP
   libraries)
 - a relational database server supporting SQL language (e.g. PostgreSQL)
