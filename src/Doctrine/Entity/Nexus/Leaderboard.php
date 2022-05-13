@@ -38,7 +38,10 @@ class Leaderboard implements UuidPrimaryKeyInterface, GamePeriodReferenceInterfa
     ]
     private ?GamePeriodInterface $gamePeriod = null;
 
-    #[ORM\OneToMany(mappedBy: 'leaderboard', targetEntity: LeaderboardEntry::class)]
+    #[
+        ORM\OneToMany(mappedBy: 'leaderboard', targetEntity: LeaderboardEntry::class),
+        ORM\OrderBy(value: ['position' => 'ASC']),
+    ]
     private Collection $entries;
 
     public function __construct()
