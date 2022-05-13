@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Contract\Entity\Nexus\GamePeriodIdEnum;
 use App\Doctrine\Entity\Nexus\GamePeriod;
 use App\Doctrine\Entity\Nexus\Leaderboard;
-use App\DTO\Nexus\Leaderboard\Entry;
+use App\Doctrine\Entity\Nexus\LeaderboardEntry;
 use App\Service\Repository\Nexus\GamePeriodRepository;
 use App\Service\Repository\Nexus\LeaderboardRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -17,15 +18,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use function array_key_exists;
 use function intval;
 use function is_numeric;
 use function max;
+use function mb_convert_case;
+use function mb_strlen;
 use function printf;
 use function sprintf;
-use function str_pad;
-use function strlen;
-use function ucfirst;
 
+use const MB_CASE_TITLE;
 use const PHP_EOL;
 
 #[AsCommand(
@@ -36,6 +38,13 @@ final class ExportLeaderboardsCommand extends BaseCommand
 {
     private const OPTION_NAME_GAME_PERIOD_ID = 'period';
     private const TABLE_HEADER_CHARACTER = 'Character';
+    private const ENCODING_UTF8 = 'UTF-8';
+
+    private const BREATH_4_NAME_REPLACEMENTS = [
+        "I\u{00c3}\u{00af}\u{00c2}\u{00bf}\u{00c2}\u{00bd}unn" => "I\u{00f0}unn",
+        "J\u{00c3}\u{00af}\u{00c2}\u{00bf}\u{00c2}\u{00bd}stein Bever" => "J\u{00f8}stein Bever",
+        "Mockfj\u{00c3}\u{00af}\u{00c2}\u{00bf}\u{00c2}\u{00bd}rdsvapnet" => "Mockfj\u{00e4}rdsvapnet",
+    ];
 
     private ?GamePeriod $gamePeriod = null;
 
@@ -94,33 +103,42 @@ final class ExportLeaderboardsCommand extends BaseCommand
         foreach ($leaderboards as $leaderboard) {
             echo PHP_EOL, PHP_EOL, PHP_EOL;
             $category = $leaderboard->getCategory();
-            $entries = $leaderboard->getEntries();
             printf(
                 '[b]%s (%s)[/b]',
                 $category->getName(),
-                ucfirst(string: $category->getType()),
+                mb_convert_case(string: $category->getType(), mode: MB_CASE_TITLE, encoding: self::ENCODING_UTF8),
             );
             echo PHP_EOL, '[code]', PHP_EOL;
-            $characterColumnWidth = strlen(string: self::TABLE_HEADER_CHARACTER);
-            /** @var Entry $entry */
-            foreach ($entries as $entry) {
-                $characterNameLength = strlen(string: $entry->getCharacterName());
+            $headerCharacterLength = mb_strlen(string: self::TABLE_HEADER_CHARACTER, encoding: self::ENCODING_UTF8);
+            $characterColumnWidth = $headerCharacterLength;
+            $entries = [];
+            /** @var LeaderboardEntry $entry */
+            foreach ($leaderboard->getEntries() as $entry) {
+                $characterName = $entry->getCharacterName();
+                if (
+                    GamePeriodIdEnum::BREATH_4 === $this->gamePeriod->getId()
+                    && array_key_exists(key: $characterName, array: self::BREATH_4_NAME_REPLACEMENTS)
+                ) {
+                    $characterName = self::BREATH_4_NAME_REPLACEMENTS[$characterName];
+                }
+                $characterNameLength = mb_strlen(string: $characterName, encoding: self::ENCODING_UTF8);
                 $characterColumnWidth = max($characterColumnWidth, $characterNameLength + 4);
+                $entries[] = [
+                    'position' => $entry->getPosition(),
+                    'characterName' => $characterName,
+                    'characterNameLength' => $characterNameLength,
+                    'score' => $entry->getScore(),
+                ];
             }
-            printf(
-                '%s %s',
-                str_pad(string: self::TABLE_HEADER_CHARACTER, length: $characterColumnWidth),
-                $category->getScoreLabel(),
-            );
+            $padding = str_repeat(string: ' ', times: $characterColumnWidth - $headerCharacterLength);
+            printf('%s%s %s', self::TABLE_HEADER_CHARACTER, $padding, $category->getScoreLabel());
             echo PHP_EOL;
-            /** @var Entry $entry */
-            foreach ($entries as $position => $entry) {
-                $characterStr = sprintf('%d) %s', $position, $entry->getCharacterName());
-                printf(
-                    '%s %s',
-                    str_pad(string: $characterStr, length: $characterColumnWidth),
-                    $entry->getScore(),
-                );
+            /** @var LeaderboardEntry $entry */
+            foreach ($entries as $entry) {
+                $characterStr = sprintf('%d) %s', $entry['position'], $entry['characterName']);
+                $characterStrLength = mb_strlen(string: $characterStr, encoding: self::ENCODING_UTF8);
+                $padding = str_repeat(string: ' ', times: $characterColumnWidth - $characterStrLength);
+                printf('%s%s %s', $characterStr, $padding, $entry['score']);
                 echo PHP_EOL;
             }
             echo '[/code]', PHP_EOL;
