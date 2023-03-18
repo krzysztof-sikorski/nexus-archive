@@ -1,0 +1,40 @@
+parameters: { }
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  # Source: https://symfony.com/doc/6.0/service_container/tags.html#autoconfiguring-tags
+  # TODO replace with `#[AutoconfigureTag]` attribute?
+  _instanceof:
+    App\Contract\Service\Parser\ParserInterface:
+      tags: [ 'app.parser' ]
+
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+
+  # Manually tagging controllers because they do not inherit from Symfony defaults.
+  # Source: https://symfony.com/doc/6.0/controller/service.html
+  # TODO: replace with `#[AsController]` attributes?
+  App\Controller\:
+    resource: '../src/Controller/'
+    tags: [ 'controller.service_arguments' ]
+
+  App\Service\Serializer:
+    class: App\Service\Serializer # TODO check if key is needed
+    decorates: Symfony\Component\Serializer\SerializerInterface
+
+  App\Service\ParserSelector:
+    arguments:
+      $parsers: !tagged_iterator { tag: 'app.parser' }
+
+  App\Command\WorkerParseCommand:
+    arguments:
+      $batchSize: '%env(int:APP_WORKER_PARSER_BATCH_SIZE)%'
+      $maxIterations: '%env(int:APP_WORKER_PARSER_MAX_ITERATIONS)%'
+      $maxDurationStr: '%env(string:APP_WORKER_PARSER_MAX_DURATION)%'
