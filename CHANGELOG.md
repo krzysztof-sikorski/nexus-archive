@@ -1,3 +1,17 @@
+# Unimplemented (planned for 1.0.0 or later)
+
+- convert config files back to YAML format
+- FIX B4 PARSER: remove encoding detection, treat everything as YTF-8, reparse all data!
+- code style: create `App\Core` namespace and move inside all contracts and
+  classes that do not depend on non-app classes like Symfony components
+- code style: try to apply advice from
+  <https://simshaun.medium.com/decoupling-your-application-user-from-symfonys-security-user-60fa31b4f7f2>
+- use [the official API](https://nexusclash.com/viewtopic.php?f=2&t=3701) to periodically fetch data?
+
+# Implemented (planned for 1.1.0)
+
+- create quick and dirty command to export leaderboards in PHPBB post format
+
 # Version 1.0.0
 
 - create interfaces and classes to represent leaderboard table as seen in game
